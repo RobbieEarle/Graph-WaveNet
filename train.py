@@ -45,7 +45,11 @@ def main():
     scaler = dataloader['scaler']
     supports = [torch.tensor(i).to(device) for i in adj_mx]
 
+    print(type(adj_mx))
+    print(adj_mx.shape)
+    print(adj_mx)
     print(args)
+    print("sfdssg"+234)
 
     if args.randomadj:
         adjinit = None
