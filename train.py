@@ -62,6 +62,7 @@ def main():
         supports = None
 
     print(adjinit)
+    print(supports[0])
     print("sfdssg" + 234)
 
     engine = trainer(scaler, args.in_dim, args.seq_length, args.num_nodes, args.nhid, args.dropout,
