@@ -60,13 +60,13 @@ def main():
     scaler = dataloader['scaler']
     supports = [torch.tensor(i).to(device) for i in adj_mx]
 
-    print(type(adj_mx))
-    print(len(adj_mx))
-    for elem in adj_mx:
-        print(type(elem))
-        print(elem[:5, :5])
-        print(elem.shape)
-    print(args)
+    # print(type(adj_mx))
+    # print(len(adj_mx))
+    # for elem in adj_mx:
+    #     print(type(elem))
+    #     print(elem[:5, :5])
+    #     print(elem.shape)
+    # print(args)
 
     if args.randomadj:
         adjinit = None
@@ -76,9 +76,9 @@ def main():
     if args.aptonly:
         supports = None
 
-    print(adjinit)
-    # print(supports[0])
-    print("sfdssg" + 234)
+    # print(adjinit)
+    # # print(supports[0])
+    # print("sfdssg" + 234)
 
     engine = trainer(scaler, args.in_dim, args.seq_length, args.num_nodes, args.nhid, args.dropout,
                          args.learning_rate, args.weight_decay, device, supports, args.gcn_bool, args.addaptadj,
