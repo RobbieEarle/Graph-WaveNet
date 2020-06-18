@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import os
 import pandas as pd
+import time
 
 
 def generate_graph_seq2seq_io_data(
@@ -26,7 +27,11 @@ def generate_graph_seq2seq_io_data(
     """
 
     num_samples, num_nodes = df.shape
+    print(df.shape)
+    # time.sleep(2)
+    # print("asdf" + 234)
     data = np.expand_dims(df.values, axis=-1)
+    print(data.shape)
     feature_list = [data]
     if add_time_in_day:
         time_ind = (df.index.values - df.index.values.astype("datetime64[D]")) / np.timedelta64(1, "D")
@@ -38,24 +43,46 @@ def generate_graph_seq2seq_io_data(
         feature_list.append(dow_tiled)
 
     data = np.concatenate(feature_list, axis=-1)
+    print(type(data))
     x, y = [], []
     min_t = abs(min(x_offsets))
     max_t = abs(num_samples - abs(max(y_offsets)))  # Exclusive
     for t in range(min_t, max_t):  # t is the index of the last observation.
         x.append(data[t + x_offsets, ...])
         y.append(data[t + y_offsets, ...])
+        if t == 11:
+            print()
+            print(x_offsets)
+            print(y_offsets)
+            print(t)
+            print(t + x_offsets)
+            print(t + y_offsets)
+            print()
+            print(data.shape)
+            print(data[t + x_offsets, ...].shape)
+            print(data[t + y_offsets, ...].shape)
+            print(data[:12, 0, :] - data[t + x_offsets, 0, :])
+            print()
+            print(data[12:24, 0, :] - data[t + y_offsets, 0, :])
     x = np.stack(x, axis=0)
     y = np.stack(y, axis=0)
+    print(x.shape)
+    print(y.shape)
+    time.sleep(2)
+    print("asdf" + 234)
     return x, y
 
 
 def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
     df = pd.read_hdf(args.traffic_df_filename)
+    print(df)
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
+    print(x_offsets)
     # Predict the next one hour
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
+    print(y_offsets)
     # x: (num_samples, input_length, num_nodes, input_dim)
     # y: (num_samples, output_length, num_nodes, output_dim)
     x, y = generate_graph_seq2seq_io_data(
@@ -101,9 +128,9 @@ if __name__ == "__main__":
     parser.add_argument("--dow", action='store_true',)
 
     args = parser.parse_args()
-    if os.path.exists(args.output_dir):
-        reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
-        if reply[0] != 'y': exit
-    else:
-        os.makedirs(args.output_dir)
+    # if os.path.exists(args.output_dir):
+    #     reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
+    #     if reply[0] != 'y': exit
+    # else:
+    #     os.makedirs(args.output_dir)
     generate_train_val_test(args)
