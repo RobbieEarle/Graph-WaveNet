@@ -28,7 +28,7 @@ def generate_graph_seq2seq_io_data(
 
     num_samples, num_nodes = midi_data.shape
     midi_data = np.expand_dims(midi_data, axis=-1)
-    print(midi_data.shape)
+    # print(midi_data.shape)
     # time.sleep(2)
     # print("asdf" + 234)
     #
@@ -85,10 +85,10 @@ def generate_train_val_test(args):
     # print(df)
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
-    print(x_offsets)
+    # print(x_offsets)
     # Predict the next one hour
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
-    print(y_offsets)
+    # print(y_offsets)
     # x: (num_samples, input_length, num_nodes, input_dim)
     # y: (num_samples, output_length, num_nodes, output_dim)
     x, y = generate_graph_seq2seq_io_data(
