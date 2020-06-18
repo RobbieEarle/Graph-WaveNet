@@ -141,6 +141,25 @@ def load_adj(pkl_filename, adjtype):
     return sensor_ids, sensor_id_to_ind, adj
 
 
+def load_piano_adj(adj_mx, adjtype):
+    if adjtype == "scalap":
+        adj = [calculate_scaled_laplacian(adj_mx)]
+    elif adjtype == "normlap":
+        adj = [calculate_normalized_laplacian(adj_mx).astype(np.float32).todense()]
+    elif adjtype == "symnadj":
+        adj = [sym_adj(adj_mx)]
+    elif adjtype == "transition":
+        adj = [asym_adj(adj_mx)]
+    elif adjtype == "doubletransition":
+        adj = [asym_adj(adj_mx), asym_adj(np.transpose(adj_mx))]
+    elif adjtype == "identity":
+        adj = [np.diag(np.ones(adj_mx.shape[0])).astype(np.float32)]
+    else:
+        error = 0
+        assert error, "adj type not defined"
+    return adj
+
+
 def load_dataset(dataset_dir, batch_size, valid_batch_size= None, test_batch_size=None):
     data = {}
     for category in ['train', 'val', 'test']:
