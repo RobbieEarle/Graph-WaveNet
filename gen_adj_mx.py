@@ -6,6 +6,7 @@ import argparse
 import numpy as np
 import pandas as pd
 import pickle
+import time
 
 
 def get_adjacency_matrix(distance_df, sensor_ids, normalized_k=0.1):
@@ -38,6 +39,10 @@ def get_adjacency_matrix(distance_df, sensor_ids, normalized_k=0.1):
 
     # Sets entries that lower than a threshold, i.e., k, to zero for sparsity.
     adj_mx[adj_mx < normalized_k] = 0
+    print(adj_mx.shape)
+    print(adj_mx)
+    time.sleep(1)
+    print("asdf" + 132)
     return sensor_ids, sensor_id_to_ind, adj_mx
 
 
