@@ -49,6 +49,7 @@ def main():
     print(len(adj_mx))
     for elem in adj_mx:
         print(type(elem))
+        print(elem[:5, :5])
         print(elem.shape)
     print(args)
     print("sfdssg"+234)
