@@ -28,21 +28,45 @@ def generate_graph_seq2seq_io_data(
 
     num_samples, num_nodes = midi_data.shape
     midi_data = np.expand_dims(midi_data, axis=-1)
-    x, y = [], []
+    midi_data = midi_data.astype(int)
+    # x, y = [], []
     min_t = abs(min(x_offsets))
     max_t = abs(num_samples - abs(max(y_offsets)))  # Exclusive
-    print(min_t, max_t)
+    x = np.zeros((max_t - min_t, len(x_offsets), num_nodes, 1), dtype='uint8')
+    y = np.zeros((max_t - min_t, len(y_offsets), num_nodes, 1), dtype='uint8')
+    # print(x.shape)
+    # print(min_t, max_t)
+    # print("asdfs"+234)
     for t in range(min_t, max_t):  # t is the index of the last observation.
-        x.append(midi_data[t + x_offsets, ...])
-        y.append(midi_data[t + y_offsets, ...])
-    x = np.stack(x, axis=0)
-    y = np.stack(y, axis=0)
+
+        x[t - min_t] = midi_data[t + x_offsets, ...]
+        y[t - min_t] = midi_data[t + y_offsets, ...]
+
+        # x.append(midi_data[t + x_offsets, ...])
+        # y.append(midi_data[t + y_offsets, ...])
+        # if t == 2000:
+        #     print()
+        #     print(x_offsets)
+        #     print(y_offsets)
+        #     print(t)
+        #     print(t + x_offsets)
+        #     print(t + y_offsets)
+        #     print()
+        #     print(midi_data.shape)
+        #     print(midi_data[t + x_offsets, ...].shape)
+        #     print(midi_data[t + y_offsets, ...].shape)
+    # x = np.stack(x, axis=0)
+    # y = np.stack(y, axis=0)
+    # print(x.shape)
+    # print(x[2500, 0, :, 0])
+    # time.sleep(1)
+    # print("sfda"+234)
     return x, y
 
 
 def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
-    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll())
+    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=50))
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
@@ -85,8 +109,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_dir", type=str, default="data/song_data", help="Output directory.")
     parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi", help="Raw traffic readings.",)
-    parser.add_argument("--seq_length_x", type=int, default=12, help="Sequence Length.",)
-    parser.add_argument("--seq_length_y", type=int, default=12, help="Sequence Length.",)
+    parser.add_argument("--seq_length_x", type=int, default=1000, help="Sequence Length.",)
+    parser.add_argument("--seq_length_y", type=int, default=1000, help="Sequence Length.",)
     parser.add_argument("--y_start", type=int, default=1, help="Y pred start", )
     parser.add_argument("--dow", action='store_true',)
 
