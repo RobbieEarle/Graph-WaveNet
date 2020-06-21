@@ -66,7 +66,7 @@ def generate_graph_seq2seq_io_data(
 
 def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
-    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=50))
+    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=25))
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
@@ -109,8 +109,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_dir", type=str, default="data/song_data", help="Output directory.")
     parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi", help="Raw traffic readings.",)
-    parser.add_argument("--seq_length_x", type=int, default=1000, help="Sequence Length.",)
-    parser.add_argument("--seq_length_y", type=int, default=1000, help="Sequence Length.",)
+    parser.add_argument("--seq_length_x", type=int, default=500, help="Sequence Length.",)
+    parser.add_argument("--seq_length_y", type=int, default=500, help="Sequence Length.",)
     parser.add_argument("--y_start", type=int, default=1, help="Y pred start", )
     parser.add_argument("--dow", action='store_true',)
 
