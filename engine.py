@@ -3,6 +3,7 @@ from model import *
 import util
 class trainer():
     def __init__(self, scaler, in_dim, seq_length, num_nodes, nhid , dropout, lrate, wdecay, device, supports, gcn_bool, addaptadj, aptinit):
+        print("-----")
         print(device)
         print(num_nodes)
         print(dropout)
@@ -10,12 +11,14 @@ class trainer():
         print(gcn_bool)
         print(addaptadj)
         print(aptinit)
+        print()
         print(in_dim)
         print(seq_length)
         print(nhid)
         print(nhid)
         print(nhid * 8)
         print(nhid * 16)
+        print("-----")
         self.model = gwnet(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj, aptinit=aptinit, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid, dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
