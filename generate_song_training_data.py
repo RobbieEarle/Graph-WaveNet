@@ -66,7 +66,7 @@ def generate_graph_seq2seq_io_data(
 
 def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
-    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=25))
+    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
@@ -113,6 +113,7 @@ if __name__ == "__main__":
     parser.add_argument("--seq_length_y", type=int, default=500, help="Sequence Length.",)
     parser.add_argument("--y_start", type=int, default=1, help="Y pred start", )
     parser.add_argument("--dow", action='store_true',)
+    parser.add_argument("--fs", type=int, default=20, help="Samples our song every 1/fs of a second",)
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):

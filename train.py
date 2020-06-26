@@ -31,8 +31,6 @@ parser.add_argument('--expid',type=int,default=1,help='experiment id')
 args = parser.parse_args()
 
 
-
-
 def main():
     #set seed
     #torch.manual_seed(args.seed)
