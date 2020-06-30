@@ -78,15 +78,16 @@ def main():
 
     for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
         testx = torch.Tensor(x).to(device)
-        # print(x.shape)
+        print(x.shape)
         testx = testx.transpose(1,3)
-        # print(x.shape)
+        print(x.shape)
         with torch.no_grad():
             preds = model(testx).transpose(1,3)
-        # print(preds.shape)
+        print(preds.shape)
         outputs.append(preds.squeeze())
         break
 
+    print(len(outputs))
     print(outputs[0].shape)
     yhat = torch.cat(outputs,dim=0)
     print(yhat.shape)
