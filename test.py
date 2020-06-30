@@ -78,19 +78,19 @@ def main():
 
     for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
         testx = torch.Tensor(x).to(device)
-        print(x.shape)
+        # print(x.shape)
         testx = testx.transpose(1,3)
-        print(x.shape)
+        # print(x.shape)
         with torch.no_grad():
             preds = model(testx).transpose(1,3)
-        print(preds.shape)
+        # print(preds.shape)
         outputs.append(preds.squeeze())
-        print(outputs[0].shape)
-        time.sleep(1)
-        print("asdf" + 234)
 
+    print(outputs[0].shape)
     yhat = torch.cat(outputs,dim=0)
+    print(yhat.shape)
     yhat = yhat[:realy.size(0),...]
+    print(yhat.shape)
 
 
     amae = []
@@ -98,6 +98,9 @@ def main():
     armse = []
     for i in range(12):
         pred = scaler.inverse_transform(yhat[:,:,i])
+        print(pred.shape)
+        time.sleep(1)
+        print("asdf" + 234)
         real = realy[:,:,i]
         metrics = util.metric(pred,real)
         log = 'Evaluate best model on test data for horizon {:d}, Test MAE: {:.4f}, Test MAPE: {:.4f}, Test RMSE: {:.4f}'
