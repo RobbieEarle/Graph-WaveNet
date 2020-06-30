@@ -77,7 +77,7 @@ def main():
 
     for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
         print(x.shape)
-        print(x)
+        print(type(x))
         print(y.shape)
         print("asdf"+234)
         testx = torch.Tensor(x).to(device)
