@@ -85,6 +85,7 @@ def main():
             preds = model(testx).transpose(1,3)
         # print(preds.shape)
         outputs.append(preds.squeeze())
+        break
 
     print(outputs[0].shape)
     yhat = torch.cat(outputs,dim=0)
