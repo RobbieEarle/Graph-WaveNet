@@ -27,6 +27,7 @@ parser.add_argument('--checkpoint', type=str, help='')
 parser.add_argument('--plotheatmap', type=str, default='True', help='')
 parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi",
                     help="Raw traffic readings.")
+parser.add_argument("--fs", type=int, default=20, help="Samples our song every 1/fs of a second")
 
 args = parser.parse_args()
 
