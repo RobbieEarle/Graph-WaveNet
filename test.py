@@ -82,7 +82,7 @@ def main():
         testx = testx.transpose(1,3)
         print(x.shape)
         with torch.no_grad():
-            preds = model(testx).transpose(1,3)
+            preds = model(testx).transpose(1, 3)
         print(preds.shape)
         outputs.append(preds.squeeze())
         break

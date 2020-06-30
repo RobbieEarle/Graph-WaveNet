@@ -68,20 +68,27 @@ def main():
     model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device(device)))
     model.eval()
 
-    midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
-    pr_data = midi_data.get_piano_roll(fs=args.fs)
-    print(type(midi_data))
+    midi_data = pretty_midi.PrettyMIDI('data/selected_piano/beethoven_tempest.midi')
+    pr_data = midi_data.get_piano_roll(fs=20)
     pr_sample = pr_data[:, 800:1000]
     midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
-    IPython.display.Audio(midi_sample.synthesize(fs=16000), rate=16000)
-    # synth = midi_sample.synthesize(fs=16000)
-    # print(synth.shape)
-    # midi_sample.write('garage/test.mid')
-    # FluidSynth().play_midi('garage/test.mid')
-    # fs = FluidSynth()
-    # fs.midi_to_audio('garage/test.mid', 'garage/test.wav')
-    # midi_sample = piano_roll_to_midi(pr_sample)
-    # midi_sample.write('garage/test.mid')
+    sample_audio = midi_sample.synthesize(fs=16000)
+
+    pr_sample = pr_sample.T
+    pr_sample = np.reshape(pr_sample, (1, pr_sample.shape[0], pr_sample.shape[1], 1))
+    pr_sample = torch.Tensor(pr_sample).to(device)
+    pr_sample = pr_sample.transpose(1, 3)
+    with torch.no_grad():
+        preds = model(pr_sample).transpose(1, 3)
+
+    preds = preds.squeeze()
+    prediction = torch.max(preds, dim=0).values.squeeze().T
+    prediction = prediction.cpu().numpy()
+    pred_midi_sample = util.piano_roll_to_pretty_midi(prediction, 20)
+    generated_audio = pred_midi_sample.synthesize(fs=16000)
+
+    print(sample_audio.shape)
+    print(generated_audio.shape)
 
 
 if __name__ == "__main__":
