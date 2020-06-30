@@ -4,7 +4,7 @@ from model import *
 import numpy as np
 import pretty_midi
 import IPython
-from midi2audio import FluidSynth
+# from midi2audio import FluidSynth
 import time
 
 parser = argparse.ArgumentParser()
