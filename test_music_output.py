@@ -74,9 +74,6 @@ def main():
     midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
     pr_data = midi_data.get_piano_roll(fs=20)
     pr_sample = pr_data[:, 800:1000]
-    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
-    sample_audio = midi_sample.synthesize(fs=16000)
-    np.save('MODEL_audio_sample', sample_audio)
     print("  Done")
 
     print("Generating prediction...")
@@ -94,9 +91,13 @@ def main():
     prediction = prediction.cpu().numpy()
     pred_midi_sample = util.piano_roll_to_pretty_midi(prediction, 20)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
+
+    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
+    sample_audio = midi_sample.synthesize(fs=16000)
     print("  Done")
 
     print("Saving data...")
+    np.save('MODEL_audio_sample', sample_audio)
     np.save('MODEL_audio_generated', generated_audio)
     np.save('MODEL_pr_sample', pr_sample)
     np.save('MODEL_pr_generated', prediction)
