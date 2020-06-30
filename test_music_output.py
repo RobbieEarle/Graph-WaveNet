@@ -3,9 +3,7 @@ import argparse
 from model import *
 import numpy as np
 import pretty_midi
-import IPython
-# from midi2audio import FluidSynth
-import time
+import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--device', type=str, default='cpu', help='')
@@ -74,21 +72,23 @@ def main():
     midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
     sample_audio = midi_sample.synthesize(fs=16000)
 
-    pr_sample = pr_sample.T
-    pr_sample = np.reshape(pr_sample, (1, pr_sample.shape[0], pr_sample.shape[1], 1))
-    pr_sample = torch.Tensor(pr_sample).to(device)
-    pr_sample = pr_sample.transpose(1, 3)
+    model_in = pr_sample.T
+    model_in = np.reshape(model_in, (1, model_in.shape[0], model_in.shape[1], 1))
+    model_in = torch.Tensor(model_in).to(device)
+    model_in = model_in.transpose(1, 3)
     with torch.no_grad():
-        preds = model(pr_sample).transpose(1, 3)
+        preds = model(model_in).transpose(1, 3)
 
     preds = preds.squeeze()
-    prediction = torch.max(preds, dim=0).values.squeeze().T
+    prediction = torch.max(preds, dim=0).values.squeeze()
     prediction = prediction.cpu().numpy()
     pred_midi_sample = util.piano_roll_to_pretty_midi(prediction, 20)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
-    print(sample_audio.shape)
-    print(generated_audio.shape)
+    np.save('MODEL_audio_sample'.format(datetime.date.today()), sample_audio)
+    np.save('MODEL_audio_generated'.format(datetime.date.today()), generated_audio)
+    np.save('MODEL_pr_sample'.format(datetime.date.today()), pr_sample)
+    np.save('MODEL_pr_generated'.format(datetime.date.today()), prediction)
 
 
 if __name__ == "__main__":
