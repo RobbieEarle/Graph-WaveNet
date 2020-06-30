@@ -3,7 +3,6 @@ import argparse
 from model import *
 import numpy as np
 import pretty_midi
-import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--device', type=str, default='cpu', help='')
@@ -27,6 +26,7 @@ parser.add_argument('--plotheatmap', type=str, default='True', help='')
 parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi",
                     help="Raw traffic readings.")
 parser.add_argument("--fs", type=int, default=20, help="Samples our song every 1/fs of a second")
+parser.add_argument("--sample_time", type=int, default=0, help="Sets when we start our sample")
 
 args = parser.parse_args()
 
@@ -73,7 +73,7 @@ def main():
     print("Loading sample song " + str(args.training_song_filename) + "...")
     midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
     pr_data = midi_data.get_piano_roll(fs=20)
-    pr_sample = pr_data[:, 800:1000]
+    pr_sample = pr_data[:, args.sample_time:args.sample_time+args.seq_length]
     print("  Done")
 
     print("Generating prediction...")
