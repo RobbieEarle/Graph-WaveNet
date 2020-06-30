@@ -4,6 +4,7 @@ from model import *
 import numpy as np
 import pretty_midi
 import time
+from mido import MidiFile, MidiTrack, Message as MidiMessage
 import pandas as pd
 
 parser = argparse.ArgumentParser()
@@ -67,14 +68,38 @@ def main():
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
 
-    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
-    midi_sample = midi_data[800:1000, :]
+    pr_data = pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs)
+    pr_sample = pr_data[:, 800:1000]
+    midi_sample = piano_roll_to_midi(pr_sample)
     midi_sample.write('garage/test')
 
-    print(midi_data.shape)
-    print(midi_sample.shape)
+    print(pr_data.shape)
+    print(pr_sample.shape)
     time.sleep(1)
     print('asdfds'+234)
+
+
+def piano_roll_to_midi(piano_roll, base_note=0):
+    """Convert piano roll to a MIDI file."""
+    notes, frames = piano_roll.shape
+    midi = MidiFile()
+    track = MidiTrack()
+    midi.tracks.append(track)
+    now = 0
+    piano_roll = np.hstack((np.zeros((notes, 1)),
+                            piano_roll,
+                            np.zeros((notes, 1))))
+    velocity_changes = np.nonzero(np.diff(piano_roll).T)
+    for time, note in zip(*velocity_changes):
+        velocity = piano_roll[note, time + 1]
+        message = MidiMessage(
+            type='note_on' if velocity > 0 else 'note_off',
+            note=int(note + base_note),
+            velocity=int(velocity * 127),
+            time=int(time - now))
+        track.append(message)
+        now = time
+    return midi
 
 
 if __name__ == "__main__":
