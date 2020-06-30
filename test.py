@@ -76,6 +76,10 @@ def main():
     realy = realy.transpose(1,3)[:,0,:,:]
 
     for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
+        print(x.shape)
+        print(x)
+        print(y.shape)
+        print("asdf"+234)
         testx = torch.Tensor(x).to(device)
         testx = testx.transpose(1,3)
         with torch.no_grad():

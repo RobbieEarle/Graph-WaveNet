@@ -60,7 +60,7 @@ def main():
                   dilation_channels=args.nhid, skip_channels=args.nhid * 8, end_channels=args.nhid * 16)
     model.to(device)
     model.load_state_dict(torch.load(args.checkpoint))
-    # model.eval()
+    model.eval()
 
 
 if __name__ == "__main__":
