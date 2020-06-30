@@ -25,6 +25,8 @@ parser.add_argument('--dropout', type=float, default=0.3, help='dropout rate')
 parser.add_argument('--weight_decay', type=float, default=0.0001, help='weight decay rate')
 parser.add_argument('--checkpoint', type=str, help='')
 parser.add_argument('--plotheatmap', type=str, default='True', help='')
+parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi",
+                    help="Raw traffic readings.")
 
 args = parser.parse_args()
 
