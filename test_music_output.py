@@ -3,12 +3,12 @@ import argparse
 from model import *
 import numpy as np
 import pretty_midi
+import IPython
+from midi2audio import FluidSynth
 import time
-from mido import MidiFile, MidiTrack, Message as MidiMessage
-import pandas as pd
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--device', type=str, default='cuda:3', help='')
+parser.add_argument('--device', type=str, default='cpu', help='')
 parser.add_argument('--data', type=str, default='data/METR-LA', help='data path')
 parser.add_argument('--adjdata', type=str, default='data/sensor_graph/adj_mx.pkl', help='adj data path')
 parser.add_argument('--adjtype', type=str, default='doubletransition', help='adj type')
@@ -65,41 +65,23 @@ def main():
                   aptinit=adjinit, in_dim=args.in_dim, out_dim=args.seq_length, residual_channels=args.nhid,
                   dilation_channels=args.nhid, skip_channels=args.nhid * 8, end_channels=args.nhid * 16)
     model.to(device)
-    model.load_state_dict(torch.load(args.checkpoint))
+    model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device(device)))
     model.eval()
 
-    pr_data = pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs)
+    midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
+    pr_data = midi_data.get_piano_roll(fs=args.fs)
+    print(type(midi_data))
     pr_sample = pr_data[:, 800:1000]
-    midi_sample = piano_roll_to_midi(pr_sample)
-    midi_sample.write('garage/test')
-
-    print(pr_data.shape)
-    print(pr_sample.shape)
-    time.sleep(1)
-    print('asdfds'+234)
-
-
-def piano_roll_to_midi(piano_roll, base_note=0):
-    """Convert piano roll to a MIDI file."""
-    notes, frames = piano_roll.shape
-    midi = MidiFile()
-    track = MidiTrack()
-    midi.tracks.append(track)
-    now = 0
-    piano_roll = np.hstack((np.zeros((notes, 1)),
-                            piano_roll,
-                            np.zeros((notes, 1))))
-    velocity_changes = np.nonzero(np.diff(piano_roll).T)
-    for time, note in zip(*velocity_changes):
-        velocity = piano_roll[note, time + 1]
-        message = MidiMessage(
-            type='note_on' if velocity > 0 else 'note_off',
-            note=int(note + base_note),
-            velocity=int(velocity * 127),
-            time=int(time - now))
-        track.append(message)
-        now = time
-    return midi
+    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
+    IPython.display.Audio(midi_sample.synthesize(fs=16000), rate=16000)
+    # synth = midi_sample.synthesize(fs=16000)
+    # print(synth.shape)
+    # midi_sample.write('garage/test.mid')
+    # FluidSynth().play_midi('garage/test.mid')
+    # fs = FluidSynth()
+    # fs.midi_to_audio('garage/test.mid', 'garage/test.wav')
+    # midi_sample = piano_roll_to_midi(pr_sample)
+    # midi_sample.write('garage/test.mid')
 
 
 if __name__ == "__main__":
