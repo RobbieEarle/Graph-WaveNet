@@ -3,6 +3,7 @@ import argparse
 from model import *
 import numpy as np
 import pandas as pd
+import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -76,14 +77,15 @@ def main():
     realy = realy.transpose(1,3)[:,0,:,:]
 
     for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
-        print(x.shape)
-        print(type(x))
-        print(y.shape)
-        print("asdf"+234)
         testx = torch.Tensor(x).to(device)
+        print(x.shape)
         testx = testx.transpose(1,3)
+        print(x.shape)
         with torch.no_grad():
             preds = model(testx).transpose(1,3)
+        print(preds.shape)
+        time.sleep(1)
+        print("asdf" + 234)
         outputs.append(preds.squeeze())
 
     yhat = torch.cat(outputs,dim=0)
