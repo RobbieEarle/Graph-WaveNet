@@ -58,37 +58,50 @@ def main():
     if args.aptonly:
         supports = None
 
+    print("Generating model... ")
     model = gwnet(device, args.num_nodes, args.dropout, supports=supports, gcn_bool=args.gcn_bool,
                   addaptadj=args.addaptadj,
                   aptinit=adjinit, in_dim=args.in_dim, out_dim=args.seq_length, residual_channels=args.nhid,
                   dilation_channels=args.nhid, skip_channels=args.nhid * 8, end_channels=args.nhid * 16)
+    print("  Done")
     model.to(device)
+    print("Loading state " + str(args.checkpoint) + "...")
     model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device(device)))
+    print("  Done")
     model.eval()
 
-    midi_data = pretty_midi.PrettyMIDI('data/selected_piano/beethoven_tempest.midi')
+    print("Loading sample song " + str(args.training_song_filename) + "...")
+    midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
     pr_data = midi_data.get_piano_roll(fs=20)
     pr_sample = pr_data[:, 800:1000]
     midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
     sample_audio = midi_sample.synthesize(fs=16000)
+    np.save('MODEL_audio_sample', sample_audio)
+    print("  Done")
 
+    print("Generating prediction...")
     model_in = pr_sample.T
     model_in = np.reshape(model_in, (1, model_in.shape[0], model_in.shape[1], 1))
     model_in = torch.Tensor(model_in).to(device)
     model_in = model_in.transpose(1, 3)
     with torch.no_grad():
         preds = model(model_in).transpose(1, 3)
+    print("  Done")
 
+    print("Synthesizing audio...")
     preds = preds.squeeze()
     prediction = torch.max(preds, dim=0).values.squeeze()
     prediction = prediction.cpu().numpy()
     pred_midi_sample = util.piano_roll_to_pretty_midi(prediction, 20)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
+    print("  Done")
 
-    np.save('MODEL_audio_sample'.format(datetime.date.today()), sample_audio)
-    np.save('MODEL_audio_generated'.format(datetime.date.today()), generated_audio)
-    np.save('MODEL_pr_sample'.format(datetime.date.today()), pr_sample)
-    np.save('MODEL_pr_generated'.format(datetime.date.today()), prediction)
+    print("Saving data...")
+    np.save('MODEL_audio_generated', generated_audio)
+    np.save('MODEL_pr_sample', pr_sample)
+    np.save('MODEL_pr_generated', prediction)
+    print("  Done")
+
 
 
 if __name__ == "__main__":
