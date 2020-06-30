@@ -2,6 +2,8 @@ import util
 import argparse
 from model import *
 import numpy as np
+import pretty_midi
+import time
 import pandas as pd
 
 parser = argparse.ArgumentParser()
@@ -61,6 +63,11 @@ def main():
     model.to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
+
+    midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
+    print(midi_data.shape)
+    time.sleep(1)
+    print('asdfds'+234)
 
 
 if __name__ == "__main__":
