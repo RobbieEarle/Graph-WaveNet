@@ -85,7 +85,7 @@ def main():
             preds = model(testx).transpose(1,3)
         print(preds.shape)
         outputs.append(preds.squeeze())
-        print(outputs)
+        print(outputs[0].shape)
         time.sleep(1)
         print("asdf" + 234)
 
