@@ -68,7 +68,11 @@ def main():
     model.eval()
 
     midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
+    midi_sample = midi_data[800:1000, :]
+    midi_sample.write('garage/test')
+
     print(midi_data.shape)
+    print(midi_sample.shape)
     time.sleep(1)
     print('asdfds'+234)
 
