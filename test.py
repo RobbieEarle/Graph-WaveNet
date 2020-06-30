@@ -84,9 +84,10 @@ def main():
         with torch.no_grad():
             preds = model(testx).transpose(1,3)
         print(preds.shape)
+        outputs.append(preds.squeeze())
+        print(outputs)
         time.sleep(1)
         print("asdf" + 234)
-        outputs.append(preds.squeeze())
 
     yhat = torch.cat(outputs,dim=0)
     yhat = yhat[:realy.size(0),...]
