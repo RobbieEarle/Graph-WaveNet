@@ -3,7 +3,6 @@ import numpy as np
 import argparse
 import time
 import util
-import matplotlib.pyplot as plt
 from engine import trainer
 
 parser = argparse.ArgumentParser()
@@ -24,7 +23,6 @@ parser.add_argument('--dropout', type=float, default=0.3, help='dropout rate')
 parser.add_argument('--weight_decay', type=float, default=0.0001, help='weight decay rate')
 parser.add_argument('--epochs', type=int, default=100, help='')
 parser.add_argument('--print_every', type=int, default=50, help='')
-# parser.add_argument('--seed',type=int,default=99,help='random seed')
 parser.add_argument('--save', type=str, default='./garage/metr', help='save path')
 parser.add_argument('--expid', type=int, default=1, help='experiment id')
 parser.add_argument('--dataset', type=str, default='bch', help='Which dataset is being trained')
@@ -155,8 +153,10 @@ def main():
         his_loss.append(mvalid_loss)
 
         log = 'Epoch: {:03d}, Train Loss: {:.4f}, Train MAPE: {:.4f}, Train RMSE: {:.4f}, Valid Loss: {:.4f}, Valid MAPE: {:.4f}, Valid RMSE: {:.4f}, Training Time: {:.4f}/epoch'
-        print(log.format(i, mtrain_loss, mtrain_mape, mtrain_rmse, mvalid_loss, mvalid_mape, mvalid_rmse, (t2 - t1)),flush=True)
-        torch.save(engine.model.state_dict(), args.save+"_epoch_"+str(i)+"_"+str(round(mvalid_loss,2))+".pth")
+        print(log.format(i, mtrain_loss, mtrain_mape, mtrain_rmse, mvalid_loss, mvalid_mape, mvalid_rmse, (t2 - t1)),
+              flush=True)
+        torch.save(engine.model.state_dict(), args.save+"_epoch_"+str(i)+"_"+str(round(mvalid_loss,2))+"_" + str(
+            round(mtrain_loss, 2)) + ".pth")
     print("Average Training Time: {:.4f} secs/epoch".format(np.mean(train_time)))
     print("Average Inference Time: {:.4f} secs".format(np.mean(val_time)))
 
