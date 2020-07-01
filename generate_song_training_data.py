@@ -98,22 +98,22 @@ def generate_train_val_test(args):
 
     print("x shape: ", x.shape, ", y shape: ", y.shape)
 
+    # Write the data into npz file.
+    num_samples = x.shape[0]
     if args.only_train:
-        x_train, y_train = x, y
-        datasets = ["train"]
+        num_test = round(num_samples * 0.05)
+        num_train = round(num_samples * 0.9)
     else:
-        # Write the data into npz file.
-        num_samples = x.shape[0]
         num_test = round(num_samples * 0.2)
         num_train = round(num_samples * 0.7)
-        num_val = num_samples - num_test - num_train
-        x_train, y_train = x[:num_train], y[:num_train]
-        x_val, y_val = (
-            x[num_train: num_train + num_val],
-            y[num_train: num_train + num_val],
-        )
-        x_test, y_test = x[-num_test:], y[-num_test:]
-        datasets = ["train", "val", "test"]
+    num_val = num_samples - num_test - num_train
+    x_train, y_train = x[:num_train], y[:num_train]
+    x_val, y_val = (
+        x[num_train: num_train + num_val],
+        y[num_train: num_train + num_val],
+    )
+    x_test, y_test = x[-num_test:], y[-num_test:]
+    datasets = ["train", "val", "test"]
 
     for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
