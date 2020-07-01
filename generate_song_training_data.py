@@ -47,11 +47,11 @@ def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
 
     if args.dataset == 'maestro':
-        pr_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
+        pr_data = np.transpose(pretty_midi.PrettyMIDI(args.raw_data_path).get_piano_roll(fs=args.fs))
 
     elif args.dataset == 'bch':
 
-        bch_df = pd.read_csv('data/bach_chorales/chorales_csv/bach_choral_set_dataset.csv')
+        bch_df = pd.read_csv(args.raw_data_path)
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
         pitches = pitches_df.to_numpy()
@@ -124,7 +124,7 @@ def generate_train_val_test(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_dir", type=str, default="data/bch_data", help="Output directory.")
-    parser.add_argument("--training_song_filename", type=str, default="data/selected_piano/beethoven_tempest.midi", help="Raw traffic readings.",)
+    parser.add_argument("--raw_data_path", type=str, default="data/bach_chorales/bach_choral_set_dataset.csv", help="Raw traffic readings.",)
     parser.add_argument("--seq_length_x", type=int, default=12, help="Sequence Length.",)
     parser.add_argument("--seq_length_y", type=int, default=12, help="Sequence Length.",)
     parser.add_argument("--y_start", type=int, default=1, help="Y pred start", )
