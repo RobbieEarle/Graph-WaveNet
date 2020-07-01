@@ -8,6 +8,8 @@ import numpy as np
 import os
 import time
 import pretty_midi
+import pandas as pd
+import util
 
 
 def generate_graph_seq2seq_io_data(
@@ -67,6 +69,56 @@ def generate_graph_seq2seq_io_data(
 def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
     midi_data = np.transpose(pretty_midi.PrettyMIDI(args.training_song_filename).get_piano_roll(fs=args.fs))
+
+    print(midi_data.shape)
+    print(midi_data[1000])
+    print()
+
+    # f = open('data/bach_chorales/chorales_csv/chorales.lisp')
+    # file = f.read()
+    # splitfile = file.split('\n')
+    # print(len(splitfile))
+    # print(splitfile[0])
+
+    bch_df = pd.read_csv('data/bach_chorales/chorales_csv/bach_choral_set_dataset.csv')
+    print(bch_df.shape)
+    print(bch_df.columns)
+    choral_ids = bch_df.choral_ID.unique()
+    for curr_id in choral_ids:
+        curr_choral_df = bch_df[bch_df['choral_ID'] == curr_id]
+
+        curr_pitches_df = curr_choral_df.iloc[:, 2:14]
+        curr_pitches_df = curr_pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
+        # print(curr_pitches_df.shape)
+        curr_pitches = curr_pitches_df.to_numpy()
+        # print(curr_pitches.shape)
+
+        curr_velocities_df = curr_choral_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+        curr_velocities = curr_velocities_df.to_numpy()
+        # print(curr_velocities.shape)
+        # print(curr_velocities)
+        # print(curr_pitches.shape)
+        # print(curr_pitches[:10, :])
+
+        curr_pitches = curr_velocities.reshape((curr_velocities.shape[0], 1)) * curr_pitches
+        curr_pr = curr_pitches.T
+        left_padding = np.zeros((59, curr_pr.shape[1]))
+        right_padding = np.zeros((37, curr_pr.shape[1]))
+        curr_pr = np.concatenate((left_padding, curr_pr, right_padding), axis=0)
+        curr_midi = util.piano_roll_to_pretty_midi(curr_pr, 1)
+        curr_audio = curr_midi.synthesize(fs=16000)
+        print("Saving " + str(curr_id))
+        np.save('garage/testing_chorales/audio_{}'.format(curr_id), curr_audio)
+
+        # print(curr_pitches.shape)
+        # print(curr_pitches[:10, :])
+        #
+        # time.sleep(1)
+        # print("asdf" + 1234)
+
+    # print(midi_data.shape)
+    time.sleep(1)
+    print("asdf"+1234)
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
@@ -116,9 +168,9 @@ if __name__ == "__main__":
     parser.add_argument("--fs", type=int, default=20, help="Samples our song every 1/fs of a second",)
 
     args = parser.parse_args()
-    if os.path.exists(args.output_dir):
-        reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
-        if reply[0] != 'y': exit
-    else:
-        os.makedirs(args.output_dir)
+    # if os.path.exists(args.output_dir):
+    #     reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
+    #     if reply[0] != 'y': exit
+    # else:
+    #     os.makedirs(args.output_dir)
     generate_train_val_test(args)
