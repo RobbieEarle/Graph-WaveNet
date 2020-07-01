@@ -97,19 +97,25 @@ def generate_train_val_test(args):
     )
 
     print("x shape: ", x.shape, ", y shape: ", y.shape)
-    # Write the data into npz file.
-    num_samples = x.shape[0]
-    num_test = round(num_samples * 0.2)
-    num_train = round(num_samples * 0.7)
-    num_val = num_samples - num_test - num_train
-    x_train, y_train = x[:num_train], y[:num_train]
-    x_val, y_val = (
-        x[num_train: num_train + num_val],
-        y[num_train: num_train + num_val],
-    )
-    x_test, y_test = x[-num_test:], y[-num_test:]
 
-    for cat in ["train", "val", "test"]:
+    if args.only_train:
+        x_train, y_train = x, y
+        datasets = ["train"]
+    else:
+        # Write the data into npz file.
+        num_samples = x.shape[0]
+        num_test = round(num_samples * 0.2)
+        num_train = round(num_samples * 0.7)
+        num_val = num_samples - num_test - num_train
+        x_train, y_train = x[:num_train], y[:num_train]
+        x_val, y_val = (
+            x[num_train: num_train + num_val],
+            y[num_train: num_train + num_val],
+        )
+        x_test, y_test = x[-num_test:], y[-num_test:]
+        datasets = ["train", "val", "test"]
+
+    for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
         print(cat, "x: ", _x.shape, "y:", _y.shape)
         np.savez_compressed(
@@ -129,6 +135,7 @@ if __name__ == "__main__":
     parser.add_argument("--seq_length_y", type=int, default=12, help="Sequence Length.",)
     parser.add_argument("--y_start", type=int, default=1, help="Y pred start", )
     parser.add_argument("--dow", action='store_true',)
+    parser.add_argument("--only_train", action='store_true', )
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro" )
 
