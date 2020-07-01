@@ -38,7 +38,7 @@ for curr_id in choral_ids:
     curr_pitches = curr_velocities.reshape((curr_velocities.shape[0], 1)) * curr_pitches
     curr_pr = curr_pitches.T
     left_padding = np.zeros((59, curr_pr.shape[1]))
-    right_padding = np.zeros((37, curr_pr.shape[1]))
+    right_padding = np.zeros((57, curr_pr.shape[1]))
     padded_curr_pr = np.concatenate((left_padding, curr_pr, right_padding), axis=0)
     curr_midi = util.piano_roll_to_pretty_midi(padded_curr_pr, 1)
     curr_audio = curr_midi.synthesize(fs=16000)
