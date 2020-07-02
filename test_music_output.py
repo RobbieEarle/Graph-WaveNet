@@ -102,8 +102,6 @@ def main():
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
-    print(pr_sample.shape)
-
     print("  Done")
 
     print("Generating prediction...")
@@ -124,9 +122,9 @@ def main():
     pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
-    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 20)
+    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 1)
     sample_audio = midi_sample.synthesize(fs=16000)
-    midi_sample_label = util.piano_roll_to_pretty_midi(pr_sample_label, 20)
+    midi_sample_label = util.piano_roll_to_pretty_midi(pr_sample_label, 1)
     sample_label_audio = midi_sample_label.synthesize(fs=16000)
     print("  Done")
 
