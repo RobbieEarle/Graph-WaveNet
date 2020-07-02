@@ -36,6 +36,13 @@ parser.add_argument("--choral_ID", type=str, default="000408b_",
 args = parser.parse_args()
 
 
+def pad_choral(choral):
+    choral = choral.cpu().numpy()
+    left_padding = np.zeros((59, choral.shape[1]))
+    right_padding = np.zeros((57, choral.shape[1]))
+    return np.concatenate((left_padding, choral, right_padding), axis=0)
+
+
 def main():
     if args.dataset == 'maestro':
         frequencies = np.array(
@@ -115,16 +122,16 @@ def main():
 
     print("Synthesizing audio...")
     prediction = preds.squeeze()
-    prediction = prediction.cpu().numpy()
-    left_padding = np.zeros((59, prediction.shape[1]))
-    right_padding = np.zeros((57, prediction.shape[1]))
-    padded_prediction = np.concatenate((left_padding, prediction, right_padding), axis=0)
+    padded_prediction = pad_choral(prediction)
     pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
-    midi_sample = util.piano_roll_to_pretty_midi(pr_sample, 1)
+    padded_sample = pad_choral(pr_sample)
+    midi_sample = util.piano_roll_to_pretty_midi(padded_sample, 1)
     sample_audio = midi_sample.synthesize(fs=16000)
-    midi_sample_label = util.piano_roll_to_pretty_midi(pr_sample_label, 1)
+
+    padded_sample_label = pad_choral(pr_sample_label)
+    midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
     sample_label_audio = midi_sample_label.synthesize(fs=16000)
     print("  Done")
 
