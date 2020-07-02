@@ -97,8 +97,7 @@ def main():
         velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
         velocities = velocities_df.to_numpy()
         velocities = np.expand_dims(velocities, axis=1)
-
-        pr_data = velocities * pitches
+        pr_data = np.transpose(velocities * pitches)
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
