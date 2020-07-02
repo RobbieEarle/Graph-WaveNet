@@ -118,6 +118,7 @@ def main():
     print("Synthesizing audio...")
     # print(preds.shape)
     prediction = preds.squeeze()
+    prediction = prediction.cpu().numpy()
     left_padding = np.zeros((59, prediction.shape[1]))
     right_padding = np.zeros((57, prediction.shape[1]))
     padded_prediction = np.concatenate((left_padding, prediction, right_padding), axis=0)
@@ -126,7 +127,6 @@ def main():
     # prediction = torch.max(preds, dim=0).values.squeeze()
     # print(preds.shape)
     print("23541010"+2345)
-    prediction = prediction.cpu().numpy()
     pred_midi_sample = util.piano_roll_to_pretty_midi(prediction, 20)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
