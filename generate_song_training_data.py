@@ -61,6 +61,9 @@ def generate_train_val_test(args):
             velocities = np.expand_dims(velocities, axis=1)
             pr_data = velocities * pr_data
 
+    if args.num_train_samples > 0:
+        pr_data = pr_data[:args.num_train_samples, :]
+
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
@@ -74,17 +77,21 @@ def generate_train_val_test(args):
         add_day_in_week=args.dow,
     )
 
+    if args.num_train_samples > 0:
+        x = np.tile(x, (100, 1, 1, 1))
+        y = np.tile(y, (100, 1, 1, 1))
+
     print("x shape: ", x.shape, ", y shape: ", y.shape)
 
     # Write the data into npz file.
     num_samples = x.shape[0]
     if args.only_train:
-        num_test = round(num_samples * 0.05)
-        num_train = round(num_samples * 0.9)
+        num_test = 1
+        num_val = 1
     else:
         num_test = round(num_samples * 0.2)
-        num_train = round(num_samples * 0.7)
-    num_val = num_samples - num_test - num_train
+        num_val = round(num_samples * 0.1)
+    num_train = num_samples - num_test - num_val
     x_train, y_train = x[:num_train], y[:num_train]
     x_val, y_val = (
         x[num_train: num_train + num_val],
@@ -117,6 +124,7 @@ if __name__ == "__main__":
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro")
     parser.add_argument("--velocities", action='store_true')
+    parser.add_argument("--num_train_samples", type=int, default=0, help="How many training samples to use", )
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):
