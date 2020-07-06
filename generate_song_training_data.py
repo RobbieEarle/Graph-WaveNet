@@ -54,34 +54,12 @@ def generate_train_val_test(args):
         bch_df = pd.read_csv(args.raw_data_path)
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
-        pitches = pitches_df.to_numpy()
-        velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
-        velocities = velocities_df.to_numpy()
-        velocities = np.expand_dims(velocities, axis=1)
-
-        pr_data = velocities * pitches
-
-    # choral_ids = bch_df.choral_ID.unique()
-    # all_chorals = []
-    # for curr_id in choral_ids:
-    #     curr_choral_df = bch_df[bch_df['choral_ID'] == curr_id]  # Get timesteps from this choral
-    #
-    #     curr_pitches_df = curr_choral_df.iloc[:, 2:14]  # Isolate pitches from other data
-    #     curr_pitches_df = curr_pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)  # Convert YES ->1, NO -> 0
-    #     curr_pitches = curr_pitches_df.to_numpy()  # Convert to Numpy array
-    #
-    #     curr_velocities_df = curr_choral_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))  # Determine velocities
-    #     curr_velocities = curr_velocities_df.to_numpy()  # Convert to Numpy array
-    #     curr_velocities = curr_velocities.reshape((curr_velocities.shape[0], 1))
-    #
-    #     curr_pr = curr_velocities * curr_pitches  # Apply velocities to active pitches
-    #     print(curr_pr.shape)
-    #
-    #     # print(curr_pitches.shape)
-    #     # print(curr_pitches[:10, :])
-    #     #
-    #     time.sleep(1)
-    #     print("asdf" + 1234)
+        pr_data = pitches_df.to_numpy()
+        if args.velocities:
+            velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+            velocities = velocities_df.to_numpy()
+            velocities = np.expand_dims(velocities, axis=1)
+            pr_data = velocities * pr_data
 
     # 0 is the latest observed sample.
     x_offsets = np.sort(np.concatenate((np.arange(-(seq_length_x - 1), 1, 1),)))
@@ -137,7 +115,8 @@ if __name__ == "__main__":
     parser.add_argument("--dow", action='store_true',)
     parser.add_argument("--only_train", action='store_true', )
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
-    parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro" )
+    parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro")
+    parser.add_argument("--velocities", action='store_true', )
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):
