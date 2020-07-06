@@ -106,13 +106,25 @@ def main():
             velocities = np.expand_dims(velocities, axis=1)
             pr_data = np.transpose(velocities * pr_data)
 
-    pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
-    pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
+            pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
+            pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
+
+        else:
+            pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
+            pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
+
+            velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+            velocities = velocities_df.to_numpy()
+            velocities = np.expand_dims(velocities, axis=1)
+            pr_data = np.transpose(velocities * pr_data)
+
+        audio_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
+        audio_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
     print("  Done")
 
     print("Generating prediction...")
-    model_in = pr_sample.T
+    model_in = audio_sample.T
     model_in = np.reshape(model_in, (1, model_in.shape[0], model_in.shape[1], 1))
     model_in = torch.Tensor(model_in).to(device)
     model_in = model_in.transpose(1, 3)
@@ -126,11 +138,11 @@ def main():
     pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
-    padded_sample = pad_choral(pr_sample)
+    padded_sample = pad_choral(audio_sample)
     midi_sample = util.piano_roll_to_pretty_midi(padded_sample, 1)
     sample_audio = midi_sample.synthesize(fs=16000)
 
-    padded_sample_label = pad_choral(pr_sample_label)
+    padded_sample_label = pad_choral(audio_sample_label)
     midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
     sample_label_audio = midi_sample_label.synthesize(fs=16000)
     print("  Done")
@@ -143,7 +155,6 @@ def main():
     np.save('MODEL_pr_sample_label', pr_sample_label)
     np.save('MODEL_pr_generated', prediction)
     print("  Done")
-
 
 
 if __name__ == "__main__":
