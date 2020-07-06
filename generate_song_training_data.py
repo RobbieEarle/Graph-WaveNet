@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser.add_argument("--only_train", action='store_true', )
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro")
-    parser.add_argument("--velocities", action='store_true', )
+    parser.add_argument("--velocities", action='store_true')
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):

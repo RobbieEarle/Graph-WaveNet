@@ -30,8 +30,8 @@ parser.add_argument("--sample_time", type=int, default=0, help="Sets when we sta
 parser.add_argument('--dataset', type=str, default='bch', help='Which dataset was used for training')
 parser.add_argument("--raw_data_path", type=str, default="data/bach_chorales/bach_choral_set_dataset.csv",
                     help="Raw traffic readings.")
-parser.add_argument("--choral_ID", type=str, default="000408b_",
-                    help="Which choral to use for testing")
+parser.add_argument("--choral_ID", type=str, default="000408b_", help="Which choral to use for testing")
+parser.add_argument("--velocities", action='store_true')
 
 args = parser.parse_args()
 
@@ -99,11 +99,12 @@ def main():
         bch_df = bch_df[bch_df['choral_ID'] == args.choral_ID]
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
-        pitches = pitches_df.to_numpy()
-        velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
-        velocities = velocities_df.to_numpy()
-        velocities = np.expand_dims(velocities, axis=1)
-        pr_data = np.transpose(velocities * pitches)
+        pr_data = pitches_df.to_numpy()
+        if args.velocities:
+            velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+            velocities = velocities_df.to_numpy()
+            velocities = np.expand_dims(velocities, axis=1)
+            pr_data = np.transpose(velocities * pr_data)
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
