@@ -4,6 +4,7 @@ from model import *
 import numpy as np
 import pretty_midi
 import pandas as pd
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--device', type=str, default='cpu', help='')
@@ -110,13 +111,18 @@ def main():
             pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
         else:
-            pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
-            pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
+            sample_data = np.transpose(pr_data)
+            pr_sample = sample_data[:, args.sample_time:args.sample_time + args.seq_length]
+            pr_sample_label = sample_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
             velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
             velocities = velocities_df.to_numpy()
             velocities = np.expand_dims(velocities, axis=1)
             pr_data = np.transpose(velocities * pr_data)
+
+        print(pr_data)
+        print("123432"+213)
+        time.sleep(1)
 
         audio_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
         audio_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
