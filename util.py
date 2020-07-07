@@ -229,7 +229,7 @@ def metric(pred, real):
     return mae,mape,rmse
 
 
-def piano_roll_to_pretty_midi(piano_roll, fs=100, program=pretty_midi.instrument_name_to_program('Piano')):
+def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
     '''Convert a Piano Roll array into a PrettyMidi object
      with a single instrument.
     Parameters
