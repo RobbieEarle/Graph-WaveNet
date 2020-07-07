@@ -137,10 +137,12 @@ def main():
     print("Synthesizing audio...")
     prediction = preds.squeeze().cpu().numpy()
     padded_prediction = pad_choral(prediction)
+    print("---------- Predictions")
     pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
     generated_audio = pred_midi_sample.synthesize(fs=16000)
 
     padded_sample = pad_choral(audio_sample)
+    print("---------- Sample")
     midi_sample = util.piano_roll_to_pretty_midi(padded_sample, 1)
     sample_audio = midi_sample.synthesize(fs=16000)
 
