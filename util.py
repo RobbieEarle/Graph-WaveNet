@@ -267,9 +267,9 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
 
     for time, note in zip(*velocity_changes):
         # use time + 1 because of padding above
-        print("  (3.{) Note: {}".format(time, note))
+        print("  (3.{}) Note: {}".format(time, note))
         velocity = piano_roll[note, time + 1]
-        print("    (3.{) Velocity: {}".format(time, velocity))
+        print("    (3.{}) Velocity: {}".format(time, velocity))
         time = time / fs
         if velocity > 0:
             if prev_velocities[note] == 0:
