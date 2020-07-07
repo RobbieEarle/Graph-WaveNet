@@ -78,8 +78,8 @@ def generate_train_val_test(args):
     )
 
     if args.num_train_samples > 0:
-        x = np.tile(x, (100, 1, 1, 1))
-        y = np.tile(y, (100, 1, 1, 1))
+        x = np.tile(x, (args.num_sample_duplicates, 1, 1, 1))
+        y = np.tile(y, (args.num_sample_duplicates, 1, 1, 1))
 
     print("x shape: ", x.shape, ", y shape: ", y.shape)
 
@@ -125,6 +125,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro")
     parser.add_argument("--velocities", action='store_true')
     parser.add_argument("--num_train_samples", type=int, default=0, help="How many training samples to use", )
+    parser.add_argument("--num_sample_duplicates", type=int, default=100, help="How many training samples to use", )
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):
