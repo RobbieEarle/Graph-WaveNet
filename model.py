@@ -214,6 +214,10 @@ class gwnet(nn.Module):
         # print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
         # print("7 - " + str(x.shape))
+
+        x[x < 2] = 0
+        x[x >= 2] = 1
+
         return x
 
 
