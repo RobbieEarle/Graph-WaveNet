@@ -147,6 +147,7 @@ def main():
     sample_audio = midi_sample.synthesize(fs=16000)
 
     padded_sample_label = pad_choral(audio_sample_label)
+    print("---------- Sample Label")
     midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
     sample_label_audio = midi_sample_label.synthesize(fs=16000)
     print("  Done")
