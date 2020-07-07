@@ -250,16 +250,16 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
     notes, frames = piano_roll.shape
     pm = pretty_midi.PrettyMIDI()
     instrument = pretty_midi.Instrument(program=program)
-    print("  (0) PR Shape: {}".format(piano_roll.shape))
+    # print("  (0) PR Shape: {}".format(piano_roll.shape))
 
     # pad 1 column of zeros so we can acknowledge inital and ending events
     piano_roll = np.pad(piano_roll, [(0, 0), (1, 1)], 'constant')
 
-    print("  (1) Padded PR: {}".format(piano_roll))
+    # print("  (1) Padded PR: {}".format(piano_roll))
 
     # use changes in velocities to find note on / note off events
     velocity_changes = np.nonzero(np.diff(piano_roll).T)
-    print("  (2) Velocity changes: {}".format(velocity_changes))
+    # print("  (2) Velocity changes: {}".format(velocity_changes))
 
     # keep track on velocities and note on times
     prev_velocities = np.zeros(notes, dtype=int)
@@ -267,9 +267,9 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
 
     for time, note in zip(*velocity_changes):
         # use time + 1 because of padding above
-        print("  (3.{}) Note: {}".format(time, note))
+        # print("  (3.{}) Note: {}".format(time, note))
         velocity = piano_roll[note, time + 1]
-        print("    (3.{}) Velocity: {}".format(time, velocity))
+        # print("    (3.{}) Velocity: {}".format(time, velocity))
         time = time / fs
         if velocity > 0:
             if prev_velocities[note] == 0:
@@ -281,11 +281,11 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
                 pitch=note,
                 start=note_on_time[note],
                 end=time)
-            print("       (3.{}) pm_note: {}".format(time, pm_note))
+            # print("       (3.{}) pm_note: {}".format(time, pm_note))
             instrument.notes.append(pm_note)
             prev_velocities[note] = 0
     pm.instruments.append(instrument)
-    print("  (4) pm:")
-    for note in pm.instruments[0].notes:
-        print("       {}".format(note))
+    # print("  (4) pm:")
+    # for note in pm.instruments[0].notes:
+        # print("       {}".format(note))
     return pm
