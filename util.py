@@ -285,5 +285,7 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
             instrument.notes.append(pm_note)
             prev_velocities[note] = 0
     pm.instruments.append(instrument)
-    print("  (4) pm: {}".format(pm.instruments[0].notes))
+    print("  (4) pm:")
+    for note in pm.instruments[0].notes:
+        print("       {}".format(note))
     return pm
