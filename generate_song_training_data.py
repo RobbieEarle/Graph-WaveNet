@@ -50,27 +50,27 @@ def generate_train_val_test(args):
         pr_data = np.transpose(pretty_midi.PrettyMIDI(args.raw_data_path).get_piano_roll(fs=args.fs))
 
     elif args.dataset == 'bch':
-        print("Owen Debugging")
-        print("What do I need? \n1. Data type\n 2. Data shape\n")
-        bch_df = pd.read_csv(args.raw_data_path)
-        pitches_df = bch_df.iloc[:, 2:14]
-        pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
+        # print("Owen Debugging")
+        # print("What do I need? \n1. Data type\n 2. Data shape\n")
+        # bch_df = pd.read_csv(args.raw_data_path)
+        # pitches_df = bch_df.iloc[:, 2:14]
+        # pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
+        #
+        # pitches = pitches_df.to_numpy()
+        # velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+        # velocities = velocities_df.to_numpy()
+        # velocities = np.expand_dims(velocities, axis=1)
 
-        pitches = pitches_df.to_numpy()
-        velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
-        velocities = velocities_df.to_numpy()
-        velocities = np.expand_dims(velocities, axis=1)
-
-        pr_data = velocities * pitches
-        print("Data type:\t", type(pr_data))
-        print("Data shape:\t", pr_data.shape)
-        print(pr_data[3:20,:])
+        # pr_data = velocities * pitches
+        # print("Data type:\t", type(pr_data))
+        # print("Data shape:\t", pr_data.shape)
+        # print(pr_data[3:20,:])
         pr_data = np.zeros((5665, 12))
-        for i in range(5665):
-            pr_data[i, 3] = 70
-        print("Data type:\t", type(pr_data))
-        print("Data shape:\t", pr_data.shape)
-        print(pr_data[3:20, :])
+
+        pr_data[:, 3] = 70
+        # print("Data type:\t", type(pr_data))
+        # print("Data shape:\t", pr_data.shape)
+        # print(pr_data[3:20, :])
 
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
