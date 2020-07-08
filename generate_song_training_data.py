@@ -55,13 +55,14 @@ def generate_train_val_test(args):
         bch_df = pd.read_csv(args.raw_data_path)
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
-        print("Data type:\t", type(pitches_df))
+
         pitches = pitches_df.to_numpy()
         velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
         velocities = velocities_df.to_numpy()
         velocities = np.expand_dims(velocities, axis=1)
 
         pr_data = velocities * pitches
+        print("Data type:\t", type(pr_data))
 
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
