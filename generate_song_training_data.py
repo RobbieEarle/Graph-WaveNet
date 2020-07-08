@@ -51,6 +51,7 @@ def generate_train_val_test(args):
 
     elif args.dataset == 'bch':
         print("Owen Debugging")
+        print("What do I need? \n1. Data type\n 2. Data shape")
         bch_df = pd.read_csv(args.raw_data_path)
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
