@@ -50,7 +50,7 @@ def generate_train_val_test(args):
         pr_data = np.transpose(pretty_midi.PrettyMIDI(args.raw_data_path).get_piano_roll(fs=args.fs))
 
     elif args.dataset == 'bch':
-
+        print("Owen Debugging")
         bch_df = pd.read_csv(args.raw_data_path)
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
