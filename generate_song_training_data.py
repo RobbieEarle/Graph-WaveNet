@@ -63,6 +63,7 @@ def generate_train_val_test(args):
 
         pr_data = velocities * pitches
         print("Data type:\t", type(pr_data))
+        print("Data shape:\t", pr_data.shape)
 
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
