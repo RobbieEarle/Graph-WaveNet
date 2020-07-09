@@ -40,7 +40,7 @@ for curr_id in choral_ids:
     left_padding = np.zeros((59, curr_pr.shape[1]))
     right_padding = np.zeros((57, curr_pr.shape[1]))
     padded_curr_pr = np.concatenate((left_padding, curr_pr, right_padding), axis=0)
-    curr_midi = util.piano_roll_to_pretty_midi(padded_curr_pr, 1)
+    curr_midi = util.piano_roll_to_pretty_midi(padded_curr_pr, base_note=21)
     curr_audio = curr_midi.synthesize(fs=16000)
 
     print("  Saving {}: {}".format(curr_id, curr_pr.shape))
