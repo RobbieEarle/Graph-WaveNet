@@ -95,18 +95,20 @@ def main():
         midi_data = pretty_midi.PrettyMIDI(args.training_song_filename)
         pr_data = midi_data.get_piano_roll(fs=20)
     elif args.dataset == 'bch':
-        # bch_df = pd.read_csv(args.raw_data_path)
-        # bch_df = bch_df[bch_df['choral_ID'] == args.choral_ID]
-        # pitches_df = bch_df.iloc[:, 2:14]
-        # pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
-        # pitches = pitches_df.to_numpy()
-        # velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
-        # velocities = velocities_df.to_numpy()
-        # velocities = np.expand_dims(velocities, axis=1)
-        # pr_data = np.transpose(velocities * pitches)
-        pr_data = np.zeros((5665, 12))
+        bch_df = pd.read_csv(args.raw_data_path)
+        bch_df = bch_df[bch_df['choral_ID'] == args.choral_ID]
+        pitches_df = bch_df.iloc[:, 2:14]
+        pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
+        pitches = pitches_df.to_numpy()
+        velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+        velocities = velocities_df.to_numpy()
+        velocities = np.expand_dims(velocities, axis=1)
+        pr_data = np.transpose(velocities * pitches)
+        print(pr_data)
 
-        pr_data[:, 3] = 70
+        # pr_data = np.zeros((5665, 12))
+        #
+        # pr_data[:, 3] = 70
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
