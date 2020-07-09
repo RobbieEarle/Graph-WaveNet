@@ -104,7 +104,8 @@ def main():
         velocities = velocities_df.to_numpy()
         velocities = np.expand_dims(velocities, axis=1)
         pr_data = np.transpose(velocities * pitches)
-        print(pr_data)
+        print(type(pr_data))
+        print(pr_data.shape)
 
         # pr_data = np.zeros((5665, 12))
         #
