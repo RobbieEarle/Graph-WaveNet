@@ -115,10 +115,7 @@ def main():
         dataloader['train_loader'].shuffle()
         for iter, (x, y) in enumerate(dataloader['train_loader'].get_iterator()):
             trainx = torch.Tensor(x).to(device)
-            print(trainx.shape)
-            print(trainx[0, :, :, 0])
             trainx = trainx.transpose(1, 3)
-            print(trainx[0, 0, :, :])
             trainy = torch.Tensor(y).to(device)
             trainy = trainy.transpose(1, 3)
             metrics = engine.train(trainx, trainy[:,0,:,:])
