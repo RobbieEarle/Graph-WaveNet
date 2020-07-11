@@ -214,6 +214,8 @@ class gwnet(nn.Module):
         x = self.end_conv_2(x)
         # print("7 - " + str(x.shape))
 
+        print("234" + 234)
+
         return x
 
 
