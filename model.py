@@ -137,7 +137,7 @@ class gwnet(nn.Module):
         self.receptive_field = receptive_field
 
     def forward(self, input):
-        print("(0) Input: {}\n{}".format(input.shape))
+        print("(0) Input: {}".format(input.shape))
         in_len = input.size(3)
         if in_len<self.receptive_field:
             x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
