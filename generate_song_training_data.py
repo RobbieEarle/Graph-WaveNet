@@ -100,6 +100,9 @@ def generate_train_val_test(args):
     x_test, y_test = x[-num_test:], y[-num_test:]
     datasets = ["train", "val", "test"]
 
+    print(x_train.shape)
+    print("1234"+1234)
+
     for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
         print(cat, "x: ", _x.shape, "y:", _y.shape)
