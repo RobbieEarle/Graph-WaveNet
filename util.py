@@ -7,6 +7,24 @@ from scipy.sparse import linalg
 import pretty_midi
 
 
+def hook_f(module, input, output):
+    print("FORWARD")
+    print(module)
+    print(len(input))
+    print(input[0].shape)
+    # if len(input[0].shape) == 4:
+    #     print(input[0][0, 0, :4, :4])
+    # elif len(input[0].shape) == 2:
+    #     print(input[0][0, :16])
+    # print("IN: {} {}".format(type(input), len(input)))
+    # for curr_in in input:
+    #     print("     {}".format(curr_in.shape))
+    # print("OUT: {} {}".format(type(output), len(output)))
+    # for curr_out in output:
+    #     print("     {}".format(curr_out.shape))
+    print()
+
+
 class DataLoader(object):
     def __init__(self, xs, ys, batch_size, pad_with_last_sample=True):
         """
@@ -48,6 +66,7 @@ class DataLoader(object):
 
         return _wrapper()
 
+
 class StandardScaler():
     """
     Standard the input
@@ -64,7 +83,6 @@ class StandardScaler():
         return (data * self.std) + self.mean
 
 
-
 def sym_adj(adj):
     """Symmetrically normalize adjacency matrix."""
     adj = sp.coo_matrix(adj)
@@ -73,6 +91,7 @@ def sym_adj(adj):
     d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
     d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
     return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).astype(np.float32).todense()
+
 
 def asym_adj(adj):
     adj = sp.coo_matrix(adj)

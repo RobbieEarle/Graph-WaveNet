@@ -60,11 +60,15 @@ def main():
         for row in range(12):
             piano_adj[row] = positions - positions[row]
 
+    # print('loading')
+
     device = torch.device(args.device)
     adj_mx = util.load_piano_adj(piano_adj, args.adjtype)
     dataloader = util.load_dataset(args.data, args.batch_size, args.batch_size, args.batch_size)
     scaler = dataloader['scaler']
     supports = [torch.tensor(i).to(device) for i in adj_mx]
+
+    # print('done loading')
 
     # print(piano_adj)
     # print(supports[0])
