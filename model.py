@@ -145,9 +145,9 @@ class gwnet(nn.Module):
             x = input
         print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
         # print("1 - " + str(x.shape))
-        x = self.start_conv(x)
         print(x.shape)
-        print(x)
+        print(x[0, 0, ...])
+        x = self.start_conv(x)
         # print("2 - " + str(x.shape))
         skip = 0
         print("234"+234)
