@@ -23,7 +23,9 @@ class trainer():
                            aptinit=aptinit, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid,
                            dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
-        print(list(self.model.modules()))
+        # print(list(self.model.modules()))
+        for module in list(self.model.modules()):
+            print(module)
         print("234"+234)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         self.loss = util.masked_mae
