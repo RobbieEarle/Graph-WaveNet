@@ -137,17 +137,18 @@ class gwnet(nn.Module):
         self.receptive_field = receptive_field
 
     def forward(self, input):
-        print("(0) Input: {}\n{}".format(input.shape, input))
+        print("(0) Input: {}\n{}".format(input.shape))
         in_len = input.size(3)
         if in_len<self.receptive_field:
             x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
         else:
             x = input
+        print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
         # print("1 - " + str(x.shape))
         x = self.start_conv(x)
         # print("2 - " + str(x.shape))
         skip = 0
-
+        print("234"+234)
         # calculate the current adaptive adj matrix once per iteration
         new_supports = None
         if self.gcn_bool and self.addaptadj and self.supports is not None:
