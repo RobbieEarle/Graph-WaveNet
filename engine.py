@@ -2,7 +2,7 @@ import torch.optim as optim
 from model import *
 import util
 class trainer():
-    def __init__(self, scaler, in_dim, seq_length, num_nodes, nhid , dropout, lrate, wdecay, device, supports, gcn_bool, addaptadj, aptinit):
+    def __init__(self, in_dim, seq_length, num_nodes, nhid , dropout, lrate, wdecay, device, supports, gcn_bool, addaptadj, aptinit):
         # print("-----")
         # print(device)
         # print(num_nodes)
@@ -29,20 +29,19 @@ class trainer():
             self.hooks[name] = module.register_forward_hook(util.hook_f)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         self.loss = util.masked_mae
-        self.scaler = scaler
         self.clip = 5
 
     def train(self, input, real_val):
         self.model.train()
         self.optimizer.zero_grad()
-        print(input.shape)
+        # print(input.shape)
         input = nn.functional.pad(input,(1,0,0,0))
-        print(input.shape)
+        # print(input.shape)
         output = self.model(input)
         output = output.transpose(1,3)
         #output = [batch_size,12,num_nodes,1]
         real = torch.unsqueeze(real_val,dim=1)
-        predict = self.scaler.inverse_transform(output)
+        predict = output
 
         loss = self.loss(predict, real, 0.0)
         loss.backward()
@@ -60,7 +59,7 @@ class trainer():
         output = output.transpose(1,3)
         #output = [batch_size,12,num_nodes,1]
         real = torch.unsqueeze(real_val,dim=1)
-        predict = self.scaler.inverse_transform(output)
+        predict = output
         loss = self.loss(predict, real, 0.0)
         mape = util.masked_mape(predict,real,0.0).item()
         rmse = util.masked_rmse(predict,real,0.0).item()
