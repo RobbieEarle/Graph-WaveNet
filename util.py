@@ -8,10 +8,12 @@ import pretty_midi
 
 
 def hook_f(module, input, output):
-    print(module)
-    print("    {}".format(len(input)))
-    print("    {}".format(input[0].shape))
-    print("    {}".format(input[0][0,0,...]))
+    print("----- {}".format(module))
+    print("{}".format(len(input)))
+    print("IN: {}, {}".format(len(input), input[0].shape))
+    print("{}".format(input[0][0, 0, ...]))
+    print("OUT: {}, {}".format(len(output), output[0].shape))
+    print("{}".format(output[0][0, 0, ...]))
     # if len(input[0].shape) == 4:
     #     print(input[0][0, 0, :4, :4])
     # elif len(input[0].shape) == 2:
