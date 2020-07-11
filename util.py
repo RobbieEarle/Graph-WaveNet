@@ -11,7 +11,7 @@ def hook_f(module, input, output):
     print(module)
     print("    {}".format(len(input)))
     print("    {}".format(input[0].shape))
-    print("    {}".format(input[0]))
+    print("    {}".format(input[0][0,0,...]))
     # if len(input[0].shape) == 4:
     #     print(input[0][0, 0, :4, :4])
     # elif len(input[0].shape) == 2:
