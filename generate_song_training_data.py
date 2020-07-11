@@ -101,6 +101,7 @@ def generate_train_val_test(args):
     datasets = ["train", "val", "test"]
 
     print(x_train.shape)
+    print(x[0, :, :, 0])
     print("1234"+1234)
 
     for cat in datasets:
