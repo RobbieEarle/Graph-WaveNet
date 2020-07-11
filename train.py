@@ -116,6 +116,7 @@ def main():
         for iter, (x, y) in enumerate(dataloader['train_loader'].get_iterator()):
             trainx = torch.Tensor(x).to(device)
             print(trainx.shape)
+            print(trainx[0, :, :, 0])
             print("234"+1324)
             trainx = trainx.transpose(1, 3)
             trainy = torch.Tensor(y).to(device)
