@@ -102,10 +102,10 @@ def generate_train_val_test(args):
 
     print(x_train.shape)
     print(x[0, :, :, 0])
-    print("1234"+1234)
 
     for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
+        print(_x.shape)
         print(cat, "x: ", _x.shape, "y:", _y.shape)
         np.savez_compressed(
             os.path.join(args.output_dir, f"{cat}.npz"),
