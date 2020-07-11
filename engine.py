@@ -26,7 +26,7 @@ class trainer():
         # print(list(self.model.modules()))
         self.hooks = {}
         for name, module in self.model.named_modules():
-            self.hooks[name] = module.register_forward_hook(self, util.hook_f)
+            self.hooks[name] = module.register_forward_hook(util.hook_f)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         self.loss = util.masked_mae
         self.scaler = scaler
