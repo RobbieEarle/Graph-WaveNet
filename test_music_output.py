@@ -119,6 +119,12 @@ def main():
         pr_data = -pr_data
         for i in range(101):
             pr_data[3, i] = 70
+    elif args.dataset == 'press_lift':
+        print("Generate music: press 2 sec, lift 2 sec, iterate")
+        pr_data = np.zeros((12, 101))
+        for i in range(101):
+            if i %4 < 2:
+                pr_data[3, i] = 1
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
