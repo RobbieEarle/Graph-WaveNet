@@ -115,9 +115,10 @@ def main():
         pr_data[3, :] = 1
     elif args.dataset == 'single_p':
         print("Testing single pressing (lifting)")
-        pr_data = np.zeros((12, 101))
+        pr_data = np.ones((12, 101))
+        pr_data = -pr_data
         for i in range(101):
-            pr_data[3, i] = i%5
+            pr_data[3, i] = 70
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
