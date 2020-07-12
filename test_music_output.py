@@ -115,10 +115,11 @@ def main():
         pr_data[3, :] = 1
     elif args.dataset == 'single_p':
         print("Testing single pressing (lifting)")
-        pr_data = np.ones((12, 101))
-        pr_data = -pr_data
+        pr_data = np.zeros((12, 101))
+
         for i in range(101):
             pr_data[3, i] = 70
+
     elif args.dataset == 'press_lift':
         print("Generate music: press 2 sec, lift 2 sec, iterate")
         pr_data = np.zeros((12, 101))

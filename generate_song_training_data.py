@@ -77,8 +77,7 @@ def generate_train_val_test(args):
 
     elif args.dataset == 'single_p':
         print("Generate music: single pressing (with lifting)")
-        pr_data = np.ones((5665, 12))
-        pr_data = -pr_data
+        pr_data = np.zeros((5665, 12))
         for i in range(5665):
             pr_data[i, 3] = 70
 
