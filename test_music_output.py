@@ -67,6 +67,8 @@ def main():
         for row in range(12):
             piano_adj[row] = positions - positions[row]
 
+        print("B_ch adj mat, \n"+str(piano_adj))
+
     device = torch.device(args.device)
     adj_mx = util.load_piano_adj(piano_adj, args.adjtype)
     supports = [torch.tensor(i).to(device) for i in adj_mx]
