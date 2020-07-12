@@ -114,7 +114,7 @@ def main():
 
         pr_data[3, :] = 1
     elif args.dataset == 'single_p':
-        print("Testing single pressing (no lifting)")
+        print("Testing single pressing (lifting)")
         pr_data = np.zeros((12, 101))
         for i in range(101):
             pr_data[3, i] = i%5
