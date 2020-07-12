@@ -63,7 +63,7 @@ def main():
     device = torch.device(args.device)
     adj_mx = util.load_piano_adj(piano_adj, args.adjtype)
     dataloader = util.load_dataset(args.data, args.batch_size, args.batch_size, args.batch_size)
-    scaler = dataloader['scaler']
+    # scaler = dataloader['scaler']
     supports = [torch.tensor(i).to(device) for i in adj_mx]
 
     print(piano_adj)
@@ -92,7 +92,7 @@ def main():
     # # print(supports[0])
     # print("sfdssg" + 234)
 
-    engine = trainer(scaler, args.in_dim, args.seq_length, args.num_nodes, args.nhid, args.dropout,
+    engine = trainer(args.in_dim, args.seq_length, args.num_nodes, args.nhid, args.dropout,
                          args.learning_rate, args.weight_decay, device, supports, args.gcn_bool, args.addaptadj,
                          adjinit)
 
@@ -190,7 +190,8 @@ def main():
     amape = []
     armse = []
     for i in range(12):
-        pred = scaler.inverse_transform(yhat[:,:,i])
+        # pred = scaler.inverse_transform(yhat[:,:,i])
+        pred = yhat[:,:,i]
         real = realy[:,:,i]
         metrics = util.metric(pred,real)
         log = 'Evaluate best model on test data for horizon {:d}, Test MAE: {:.4f}, Test MAPE: {:.4f}, Test RMSE: {:.4f}'
