@@ -59,7 +59,7 @@ def main():
         for row in range(128):
             piano_adj[row] = frequencies - frequencies[row]
 
-    elif args.dataset == 'bch' or args.dataset == 'single' or args.dataset == 'single_p':
+    elif args.dataset == 'bch' or args.dataset == 'single' or args.dataset == 'single_p' or args.dataset == 'press_lift':
         positions = np.arange(12)
         # frequencies = np.array(
         #     [261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 391.99, 415.31, 440.00, 466.16, 493.88])
