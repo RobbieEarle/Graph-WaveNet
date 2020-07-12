@@ -124,7 +124,7 @@ def main():
         pr_data = np.zeros((12, 101))
         for i in range(101):
             if i %4 < 2:
-                pr_data[3, i] = 1
+                pr_data[3, i] = 70
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
