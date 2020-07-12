@@ -52,25 +52,28 @@ def generate_train_val_test(args):
     elif args.dataset == 'bch':
         # print("Owen Debugging")
         # print("What do I need? \n1. Data type\n 2. Data shape\n")
-        # bch_df = pd.read_csv(args.raw_data_path)
-        # pitches_df = bch_df.iloc[:, 2:14]
-        # pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
-        #
-        # pitches = pitches_df.to_numpy()
-        # velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
-        # velocities = velocities_df.to_numpy()
-        # velocities = np.expand_dims(velocities, axis=1)
+        bch_df = pd.read_csv(args.raw_data_path)
+        pitches_df = bch_df.iloc[:, 2:14]
+        pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
 
-        # pr_data = velocities * pitches
+        pitches = pitches_df.to_numpy()
+        velocities_df = bch_df['meter'].apply(lambda x: 10 + int(x / 5 * 100))
+        velocities = velocities_df.to_numpy()
+        velocities = np.expand_dims(velocities, axis=1)
+
+        pr_data = velocities * pitches
         # print("Data type:\t", type(pr_data))
         # print("Data shape:\t", pr_data.shape)
         # print(pr_data[3:20,:])
-        pr_data = np.zeros((5665, 12))
 
-        pr_data[:, 3] = 1
         # print("Data type:\t", type(pr_data))
         # print("Data shape:\t", pr_data.shape)
         # print(pr_data[3:20, :])
+    elif args.dataset == 'single':
+        print("Generate music: single pressing (without lifting")
+        pr_data = np.zeros((5665, 12))
+
+        pr_data[:, 3] = 1
 
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
@@ -150,6 +153,7 @@ if __name__ == "__main__":
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro" )
 
+    print("Dataset para: " + str(parser.parse_args("--dataset")))
     args = parser.parse_args()
     if os.path.exists(args.output_dir):
         reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
