@@ -80,7 +80,8 @@ def generate_train_val_test(args):
         pr_data = np.ones((5665, 12))
         pr_data = -pr_data
         for i in range(5665):
-            pr_data[i, 3] = 1
+            pr_data[i, 3] = 70
+
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
     # for curr_id in choral_ids:
