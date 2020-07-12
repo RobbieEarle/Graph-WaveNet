@@ -153,8 +153,8 @@ if __name__ == "__main__":
     parser.add_argument("--fs", type=int, default=1, help="Samples our song every 1/fs of a second",)
     parser.add_argument("--dataset", type=str, default="bch", help="Which dataset to use. Supports bch or maestro" )
 
-    print("Dataset para: " + str(parser.parse_args("--dataset")))
     args = parser.parse_args()
+    print("Dataset para: " + str(args.dataset))
     if os.path.exists(args.output_dir):
         reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
         if reply[0] != 'y': exit
