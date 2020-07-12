@@ -70,11 +70,16 @@ def generate_train_val_test(args):
         # print("Data shape:\t", pr_data.shape)
         # print(pr_data[3:20, :])
     elif args.dataset == 'single':
-        print("Generate music: single pressing (without lifting")
+        print("Generate music: single pressing (without lifting)")
         pr_data = np.zeros((5665, 12))
 
         pr_data[:, 3] = 1
 
+    elif args.dataset == 'single_p':
+        print("Generate music: single pressing (with lifting)")
+        pr_data = np.zeros((5665, 12))
+        for i in range(5665):
+            pr_data[i, 3] = i%5
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
     # for curr_id in choral_ids:
