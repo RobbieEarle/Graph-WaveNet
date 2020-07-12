@@ -66,6 +66,8 @@ def main():
     scaler = dataloader['scaler']
     supports = [torch.tensor(i).to(device) for i in adj_mx]
 
+    print(piano_adj)
+
     # print(piano_adj)
     # print(supports[0])
     # print("sfdssg" + 234)

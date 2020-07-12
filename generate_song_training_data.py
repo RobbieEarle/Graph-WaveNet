@@ -67,7 +67,7 @@ def generate_train_val_test(args):
         # print(pr_data[3:20,:])
         pr_data = np.zeros((5665, 12))
 
-        pr_data[:, 3] = 70
+        pr_data[:, 3] = 1
         # print("Data type:\t", type(pr_data))
         # print("Data shape:\t", pr_data.shape)
         # print(pr_data[3:20, :])
