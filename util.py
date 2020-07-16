@@ -8,7 +8,27 @@ import pretty_midi
 
 
 def hook_f(module, input, output):
-    print("----- {}".format(module))
+    print("F ----- {}".format(module))
+    print("{}".format(len(input)))
+    print("IN: {}, {}".format(len(input), input[0].shape))
+    print("{}".format(input[0][0, 0, ...]))
+    print("OUT: {}, {}".format(len(output), output[0].shape))
+    print("{}".format(output[0][0, 0, ...]))
+    # if len(input[0].shape) == 4:
+    #     print(input[0][0, 0, :4, :4])
+    # elif len(input[0].shape) == 2:
+    #     print(input[0][0, :16])
+    # print("IN: {} {}".format(type(input), len(input)))
+    # for curr_in in input:
+    #     print("     {}".format(curr_in.shape))
+    # print("OUT: {} {}".format(type(output), len(output)))
+    # for curr_out in output:
+    #     print("     {}".format(curr_out.shape))
+    print()
+
+
+def hook_b(module, input, output):
+    print("B ----- {}".format(module))
     print("{}".format(len(input)))
     print("IN: {}, {}".format(len(input), input[0].shape))
     print("{}".format(input[0][0, 0, ...]))
@@ -197,6 +217,7 @@ def load_dataset(dataset_dir, batch_size, valid_batch_size= None, test_batch_siz
     data['test_loader'] = DataLoader(data['x_test'], data['y_test'], test_batch_size)
     return data
 
+
 def masked_mse(preds, labels, null_val=np.nan):
     if np.isnan(null_val):
         mask = ~torch.isnan(labels)
@@ -210,11 +231,14 @@ def masked_mse(preds, labels, null_val=np.nan):
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
     return torch.mean(loss)
 
+
 def masked_rmse(preds, labels, null_val=np.nan):
     return torch.sqrt(masked_mse(preds=preds, labels=labels, null_val=null_val))
 
 
 def masked_mae(preds, labels, null_val=np.nan):
+    print("Predictions: {}".format(preds.shape))
+    print("Labels: {}".format(labels.shape))
     if np.isnan(null_val):
         mask = ~torch.isnan(labels)
     else:
@@ -225,6 +249,7 @@ def masked_mae(preds, labels, null_val=np.nan):
     loss = torch.abs(preds-labels)
     loss = loss * mask
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
+    print("Loss: {}".format(torch.mean(loss)))
     return torch.mean(loss)
 
 
