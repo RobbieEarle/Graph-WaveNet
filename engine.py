@@ -44,7 +44,7 @@ class trainer():
         real = torch.unsqueeze(real_val,dim=1)
         predict = output
 
-        loss = self.loss(predict, real, 0.0)
+        loss = self.loss(predict, real, 0.0, w=5)
         loss.backward()
         if self.clip is not None:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
