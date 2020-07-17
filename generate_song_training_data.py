@@ -82,11 +82,14 @@ def generate_train_val_test(args):
             pr_data[i, 3] = 70
 
     elif args.dataset == 'press_lift':
-        print("Generate music: press 2 sec, lift 2 sec, iterate")
+        # print("Generate music: press 2 sec, lift 2 sec, iterate")
+        print("Generate music: press 2 sec, another 2 sec, iterate")
         pr_data = np.zeros((5665, 12))
         for i in range(5665):
             if i %4 < 2:
-                pr_data[i, 3] = 70
+                pr_data[i, 3] = 1
+            else:
+                pr_data[i, 4] = 1
 
 
     # choral_ids = bch_df.choral_ID.unique()
