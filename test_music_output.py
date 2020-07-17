@@ -65,7 +65,7 @@ def main():
         #     [261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 391.99, 415.31, 440.00, 466.16, 493.88])
         piano_adj = np.zeros((12, 12))
         for row in range(12):
-            piano_adj[row] = positions - positions[row]
+            piano_adj[row] = np.abs(positions - positions[row])
 
         print("B_ch adj mat, \n"+str(piano_adj))
 
