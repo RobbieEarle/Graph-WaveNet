@@ -232,13 +232,32 @@ def masked_mse(preds, labels, null_val=np.nan):
     return torch.mean(loss)
 
 
+def bob_loss(preds, labels, null_val=np.nan):
+    print("Predictions: {}".format(preds.shape))
+    print("Predictions: {}".format(preds))
+    print()
+    print("Labels: {}".format(labels.shape))
+    print("Labels: {}".format(labels))
+    if np.isnan(null_val):
+        mask = ~torch.isnan(labels)
+    else:
+        mask = (labels != null_val)
+    mask = mask.float()
+    mask /= torch.mean((mask))
+    mask = torch.where(torch.isnan(mask), torch.zeros_like(mask), mask)
+    loss = torch.abs(preds - labels)
+    loss = loss * mask
+    loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
+    print("Loss: {}".format(torch.mean(loss)))
+    print("@#$"+234)
+    return torch.mean(loss)
+
+
 def masked_rmse(preds, labels, null_val=np.nan):
     return torch.sqrt(masked_mse(preds=preds, labels=labels, null_val=null_val))
 
 
 def masked_mae(preds, labels, null_val=np.nan):
-    print("Predictions: {}".format(preds.shape))
-    print("Labels: {}".format(labels.shape))
     if np.isnan(null_val):
         mask = ~torch.isnan(labels)
     else:
@@ -249,7 +268,6 @@ def masked_mae(preds, labels, null_val=np.nan):
     loss = torch.abs(preds-labels)
     loss = loss * mask
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
-    print("Loss: {}".format(torch.mean(loss)))
     return torch.mean(loss)
 
 

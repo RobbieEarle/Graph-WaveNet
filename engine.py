@@ -29,7 +29,7 @@ class trainer():
         #     self.fhooks[name] = module.register_forward_hook(util.hook_f)
         #     self.bhooks[name] = module.register_forward_hook(util.hook_b)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
-        self.loss = util.masked_mse
+        self.loss = util.bob_loss
         self.clip = 5
 
     def train(self, input, real_val):
