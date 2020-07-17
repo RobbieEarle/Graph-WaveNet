@@ -7,6 +7,46 @@ from scipy.sparse import linalg
 import pretty_midi
 
 
+def hook_f(module, input, output):
+    print("F ----- {}".format(module))
+    print("{}".format(len(input)))
+    print("IN: {}, {}".format(len(input), input[0].shape))
+    print("{}".format(input[0][0, 0, ...]))
+    print("OUT: {}, {}".format(len(output), output[0].shape))
+    print("{}".format(output[0][0, 0, ...]))
+    # if len(input[0].shape) == 4:
+    #     print(input[0][0, 0, :4, :4])
+    # elif len(input[0].shape) == 2:
+    #     print(input[0][0, :16])
+    # print("IN: {} {}".format(type(input), len(input)))
+    # for curr_in in input:
+    #     print("     {}".format(curr_in.shape))
+    # print("OUT: {} {}".format(type(output), len(output)))
+    # for curr_out in output:
+    #     print("     {}".format(curr_out.shape))
+    print()
+
+
+def hook_b(module, input, output):
+    print("B ----- {}".format(module))
+    print("{}".format(len(input)))
+    print("IN: {}, {}".format(len(input), input[0].shape))
+    print("{}".format(input[0][0, 0, ...]))
+    print("OUT: {}, {}".format(len(output), output[0].shape))
+    print("{}".format(output[0][0, 0, ...]))
+    # if len(input[0].shape) == 4:
+    #     print(input[0][0, 0, :4, :4])
+    # elif len(input[0].shape) == 2:
+    #     print(input[0][0, :16])
+    # print("IN: {} {}".format(type(input), len(input)))
+    # for curr_in in input:
+    #     print("     {}".format(curr_in.shape))
+    # print("OUT: {} {}".format(type(output), len(output)))
+    # for curr_out in output:
+    #     print("     {}".format(curr_out.shape))
+    print()
+
+
 class DataLoader(object):
     def __init__(self, xs, ys, batch_size, pad_with_last_sample=True):
         """
@@ -48,6 +88,7 @@ class DataLoader(object):
 
         return _wrapper()
 
+
 class StandardScaler():
     """
     Standard the input
@@ -64,7 +105,6 @@ class StandardScaler():
         return (data * self.std) + self.mean
 
 
-
 def sym_adj(adj):
     """Symmetrically normalize adjacency matrix."""
     adj = sp.coo_matrix(adj)
@@ -73,6 +113,7 @@ def sym_adj(adj):
     d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
     d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
     return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).astype(np.float32).todense()
+
 
 def asym_adj(adj):
     adj = sp.coo_matrix(adj)
@@ -174,8 +215,8 @@ def load_dataset(dataset_dir, batch_size, valid_batch_size= None, test_batch_siz
     data['train_loader'] = DataLoader(data['x_train'], data['y_train'], batch_size)
     data['val_loader'] = DataLoader(data['x_val'], data['y_val'], valid_batch_size)
     data['test_loader'] = DataLoader(data['x_test'], data['y_test'], test_batch_size)
-    # data['scaler'] = scaler
     return data
+
 
 def masked_mse(preds, labels, null_val=np.nan):
     if np.isnan(null_val):
@@ -189,6 +230,36 @@ def masked_mse(preds, labels, null_val=np.nan):
     loss = loss * mask
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
     return torch.mean(loss)
+
+
+def bob_loss(preds, labels, null_val=np.nan, w=1):
+    # print("Predictions: {}".format(preds.shape))
+    # print("Predictions: {}".format(preds[0, 0, ...]))
+    # print()
+    # print("Labels: {}".format(labels.shape))
+    # print("Labels: {}".format(labels[0, 0, ...]))
+    if np.isnan(null_val):
+        mask = ~torch.isnan(labels)
+    else:
+        mask = (labels != null_val)
+    mask = mask.float()
+    mask /= torch.mean((mask))
+    mask = torch.where(torch.isnan(mask), torch.zeros_like(mask), mask)
+    loss = torch.abs(preds - labels)
+    # print("Loss: {}".format(loss[0, 0, ...]))
+    # print(mask)
+    loss = loss * mask
+    loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
+    # print("Loss1: {}".format(loss.shape))
+    # print("Loss1: {}".format(loss[0, 0, ...]))
+    # print("Loss1: {}".format(torch.mean(loss)))
+    # loss = torch.where(torch.equal(labels, 0), loss * w, loss)
+    # print("Loss2: {}".format(loss.shape))
+    # print("Loss2: {}".format(loss[0, 0, ...]))
+    # print("Loss2: {}".format(torch.mean(loss)))
+    # print("@#$"+234)
+    return torch.mean(loss)
+
 
 def masked_rmse(preds, labels, null_val=np.nan):
     return torch.sqrt(masked_mse(preds=preds, labels=labels, null_val=null_val))
@@ -229,7 +300,7 @@ def metric(pred, real):
     return mae,mape,rmse
 
 
-def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
+def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
     '''Convert a Piano Roll array into a PrettyMidi object
      with a single instrument.
     Parameters
@@ -250,12 +321,16 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
     notes, frames = piano_roll.shape
     pm = pretty_midi.PrettyMIDI()
     instrument = pretty_midi.Instrument(program=program)
+    # print("  (0) PR Shape: {}".format(piano_roll.shape))
 
     # pad 1 column of zeros so we can acknowledge inital and ending events
     piano_roll = np.pad(piano_roll, [(0, 0), (1, 1)], 'constant')
 
+    # print("  (1) Padded PR: {}".format(piano_roll))
+
     # use changes in velocities to find note on / note off events
     velocity_changes = np.nonzero(np.diff(piano_roll).T)
+    # print("  (2) Velocity changes: {}".format(velocity_changes))
 
     # keep track on velocities and note on times
     prev_velocities = np.zeros(notes, dtype=int)
@@ -263,7 +338,9 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
 
     for time, note in zip(*velocity_changes):
         # use time + 1 because of padding above
+        # print("  (3.{}) Note: {}".format(time, note))
         velocity = piano_roll[note, time + 1]
+        # print("    (3.{}) Velocity: {}".format(time, velocity))
         time = time / fs
         if velocity > 0:
             if prev_velocities[note] == 0:
@@ -275,7 +352,11 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
                 pitch=note,
                 start=note_on_time[note],
                 end=time)
+            # print("       (3.{}) pm_note: {}".format(time, pm_note))
             instrument.notes.append(pm_note)
             prev_velocities[note] = 0
     pm.instruments.append(instrument)
+    # print("  (4) pm:")
+    # for note in pm.instruments[0].notes:
+        # print("       {}".format(note))
     return pm
