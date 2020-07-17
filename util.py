@@ -234,10 +234,10 @@ def masked_mse(preds, labels, null_val=np.nan):
 
 def bob_loss(preds, labels, null_val=np.nan, w=1):
     print("Predictions: {}".format(preds.shape))
-    print("Predictions: {}".format(preds))
+    print("Predictions: {}".format(preds[0, 0, ...]))
     print()
     print("Labels: {}".format(labels.shape))
-    print("Labels: {}".format(labels))
+    print("Labels: {}".format(labels[0, 0, ...]))
     if np.isnan(null_val):
         mask = ~torch.isnan(labels)
     else:
@@ -248,11 +248,13 @@ def bob_loss(preds, labels, null_val=np.nan, w=1):
     loss = torch.abs(preds - labels)
     loss = loss * mask
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
-    print("Loss: {}".format(torch.mean(loss)))
-    print("Loss: {}".format(loss))
-    loss = torch.where(labels == 0, loss * w, loss)
-    print("Loss: {}".format(torch.mean(loss)))
-    print("Loss: {}".format(loss))
+    print("Loss1: {}".format(loss.shape))
+    print("Loss1: {}".format(loss[0, 0, ...]))
+    print("Loss1: {}".format(torch.mean(loss)))
+    loss = torch.where(torch.equal(labels, 0), loss * w, loss)
+    print("Loss2: {}".format(loss.shape))
+    print("Loss2: {}".format(loss[0, 0, ...]))
+    print("Loss2: {}".format(torch.mean(loss)))
     print("@#$"+234)
     return torch.mean(loss)
 
