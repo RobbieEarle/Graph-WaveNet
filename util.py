@@ -246,6 +246,7 @@ def bob_loss(preds, labels, null_val=np.nan, w=1):
     mask /= torch.mean((mask))
     mask = torch.where(torch.isnan(mask), torch.zeros_like(mask), mask)
     loss = torch.abs(preds - labels)
+    print("Loss: {}".format(loss[0, 0, ...]))
     loss = loss * mask
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
     print("Loss1: {}".format(loss.shape))
