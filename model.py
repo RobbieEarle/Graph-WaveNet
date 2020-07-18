@@ -141,11 +141,11 @@ class gwnet(nn.Module):
         # [32, 1, 12, 11] = batches, features, pitches, time steps + 1 pad
         in_len = input.size(3)
         # print(in_len, input.size(3))
-        if in_len<self.receptive_field:
+        if in_len < self.receptive_field:
             x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
         else:
             x = input
-        # print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
+        print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
         print("1 - " + str(x.shape))
         x = self.start_conv(x)
         print("2 - " + str(x.shape))
