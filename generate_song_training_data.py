@@ -103,6 +103,9 @@ def generate_train_val_test(args):
     # print(x_train.shape)
     # print(x[0, :, :, 0])
 
+    print("x: {}".format(x_train[:10, :, :, 0]))
+    print("y: {}".format(y_train[:10, :, :, 0]))
+
     for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
         # print(_x[2347, :, :, 0])
