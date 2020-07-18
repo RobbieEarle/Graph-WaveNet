@@ -36,8 +36,10 @@ class trainer():
         self.model.train()
         self.optimizer.zero_grad()
         print(input.shape)
+        print(input[0,0, ...])
         input = nn.functional.pad(input,(1,0,0,0))
         print(input.shape)
+        print(input[0, 0, ...])
         output = self.model(input)
         output = output.transpose(1,3)
         #output = [batch_size,12,num_nodes,1]
