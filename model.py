@@ -215,9 +215,7 @@ class gwnet(nn.Module):
         # print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
 
-        x = F.sigmoid(x)
-        x[x >= 0.5] = 1
-        x[x < 0.5] = 0
+        x = F.sigmoid(x).round()
         # print("7 - " + str(x.shape))
 
         # print("234" + 234)
