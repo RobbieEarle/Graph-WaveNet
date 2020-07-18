@@ -253,7 +253,7 @@ def bob_loss(preds, labels, null_val=np.nan, w=1):
     # print("Loss1: {}".format(loss.shape))
     # print("Loss1: {}".format(loss[0, 0, ...]))
     # print("Loss1: {}".format(torch.mean(loss)))
-    loss = torch.where(torch.equal(labels, 1), loss * w, loss)
+    loss = torch.where(labels == 1, loss * w, loss)
     # print("Loss2: {}".format(loss.shape))
     # print("Loss2: {}".format(loss[0, 0, ...]))
     # print("Loss2: {}".format(torch.mean(loss)))
