@@ -122,8 +122,6 @@ class gwnet(nn.Module):
                 if self.gcn_bool:
                     self.gconv.append(gcn(dilation_channels,residual_channels,dropout,support_len=self.supports_len))
 
-
-
         self.end_conv_1 = nn.Conv2d(in_channels=skip_channels,
                                   out_channels=end_channels,
                                   kernel_size=(1,1),
@@ -160,6 +158,7 @@ class gwnet(nn.Module):
         # print()
 
         # WaveNet layers
+        print(self.blocks, self.layers)
         for i in range(self.blocks * self.layers):
 
             #            |----------------------------------------|     *residual*
