@@ -138,6 +138,7 @@ class gwnet(nn.Module):
 
     def forward(self, input):
         print("(0) Input: {}".format(input.shape))
+        # [32, 1, 12, 11] = batches, features, pitches, time steps + 1 pad
         in_len = input.size(3)
         # print(in_len, input.size(3))
         if in_len<self.receptive_field:

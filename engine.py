@@ -35,9 +35,9 @@ class trainer():
     def train(self, input, real_val):
         self.model.train()
         self.optimizer.zero_grad()
-        # print(input.shape)
+        print(input.shape)
         input = nn.functional.pad(input,(1,0,0,0))
-        # print(input.shape)
+        print(input.shape)
         output = self.model(input)
         output = output.transpose(1,3)
         #output = [batch_size,12,num_nodes,1]
