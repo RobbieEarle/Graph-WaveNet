@@ -216,9 +216,12 @@ class gwnet(nn.Module):
         print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
         print("7 - " + str(x.shape))
+        print(x[0, :, :, 0])
 
         x = torch.sigmoid(x)
+        print(x[0, :, :, 0])
         x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
+        print(x[0, :, :, 0])
         # print(x.shape)
         # print(x[0, 0, ...])
         print(self.round_threshold)
