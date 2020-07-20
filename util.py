@@ -253,7 +253,7 @@ def bob_loss(preds, labels, null_val=np.nan, w=1):
     # print("Loss1: {}".format(loss.shape))
     # print("Loss1: {}".format(loss[0, 0, ...]))
     # print("Loss1: {}".format(torch.mean(loss)))
-    # loss = loss + torch.where(labels == 1, loss * w, torch.zeros_like(loss))
+    loss = loss + torch.where(labels == 1, loss * w, torch.zeros_like(loss))
     # print("Loss2: {}".format(loss.shape))
     # print("Loss2: {}".format(loss[0, 0, ...]))
     # print("Loss2: {}".format(torch.mean(loss)))
@@ -265,7 +265,7 @@ def masked_rmse(preds, labels, null_val=np.nan):
     return torch.sqrt(masked_mse(preds=preds, labels=labels, null_val=null_val))
 
 
-def masked_mae(preds, labels, null_val=np.nan):
+def masked_mae(preds, labels, null_val=np.nan, w=None):
     if np.isnan(null_val):
         mask = ~torch.isnan(labels)
     else:
