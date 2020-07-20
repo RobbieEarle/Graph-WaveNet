@@ -23,11 +23,13 @@ class trainer():
                            aptinit=aptinit, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid,
                            dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
-        self.fhooks = {}
-        self.bhooks = {}
-        for name, module in self.model.named_modules():
-            # self.fhooks[name] = module.register_forward_hook(util.hook_f)
-            self.bhooks[name] = module.register_backward_hook(util.hook_b)
+
+        # self.fhooks = {}
+        # self.bhooks = {}
+        # for name, module in self.model.named_modules():
+        #     # self.fhooks[name] = module.register_forward_hook(util.hook_f)
+        #     self.bhooks[name] = module.register_backward_hook(util.hook_b)
+
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         self.loss = util.bob_loss
         # self.loss = util.masked_mae
@@ -48,14 +50,14 @@ class trainer():
         predict = output
 
         loss = self.loss(predict, real, w=1000)
-        print(loss)
+        # print(loss)
         loss.backward()
         if self.clip is not None:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
         self.optimizer.step()
         mape = util.masked_mape(predict,real,0.0).item()
         rmse = util.masked_rmse(predict,real,0.0).item()
-        print("234"+234)
+        # print("234"+234)
         return loss.item(),mape,rmse
 
     def eval(self, input, real_val):
