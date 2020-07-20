@@ -97,6 +97,18 @@ def generate_train_val_test(args):
         pr_data[:, 3] = 1
         pr_data[:, 8] = 1
 
+    elif args.dataset == 'bounce':
+        print("Bouncing")
+        pr_data = np.zeros((5665, 12))
+        for i in range(5665):
+            m = i % 4
+            if m == 0:
+                pr_data[i,3] = 1
+            elif m == 1 or m == 3:
+                pr_data[i, 4] = 1
+            elif m == 2:
+                pr_data[i, 5] = 1
+
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
     # for curr_id in choral_ids:

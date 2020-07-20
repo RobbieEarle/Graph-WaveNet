@@ -135,6 +135,17 @@ def main():
         pr_data[3, :] = 1
         pr_data[8, :] = 1
 
+    elif args.dataset == 'bounce':
+        print("Testing: Bouncing")
+        pr_data = np.zeros((12, 101))
+        for i in range(101):
+            m = i % 4
+            if m == 0:
+                pr_data[3, i] = 1
+            elif m == 1 or m == 3:
+                pr_data[4, i] = 1
+            elif m == 2:
+                pr_data[5, i] = 1
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
