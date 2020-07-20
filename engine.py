@@ -33,7 +33,7 @@ class trainer():
         self.loss = util.masked_mae
         for name, param in self.model.named_parameters():
             if param.requires_grad:
-                print(name, param.data)
+                print(name)
         self.clip = 5
 
     def train(self, input, real_val):
