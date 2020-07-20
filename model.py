@@ -219,10 +219,10 @@ class gwnet(nn.Module):
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
 
-        x = torch.sigmoid(x)
+        x = torch.sigmoid(x) + self.round_threshold
         # print(x[0, :, :, 0])
-        x = torch.where(x > self.round_threshold, torch.ones_like(x, requires_grad=True).to(self.device),
-                        torch.zeros_like(x, requires_grad=True).to(self.device))
+        # x = torch.where(x > self.round_threshold, torch.ones_like(x, requires_grad=True).to(self.device),
+        #                 torch.zeros_like(x, requires_grad=True).to(self.device))
         # print(x[0, :, :, 0])
         print(self.round_threshold)
         # x = torch.sigmoid(x)
