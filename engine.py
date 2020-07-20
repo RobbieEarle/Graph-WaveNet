@@ -47,7 +47,7 @@ class trainer():
         real = torch.unsqueeze(real_val,dim=1)
         predict = output
 
-        loss = self.loss(predict, real, w=10000)
+        loss = self.loss(predict, real, w=100)
         print(loss)
         loss.backward()
         if self.clip is not None:
@@ -66,7 +66,7 @@ class trainer():
         #output = [batch_size,12,num_nodes,1]
         real = torch.unsqueeze(real_val,dim=1)
         predict = output
-        loss = self.loss(predict, real, w=10000)
+        loss = self.loss(predict, real, w=100)
         mape = util.masked_mape(predict,real,0.0).item()
         rmse = util.masked_rmse(predict,real,0.0).item()
         return loss.item(),mape,rmse
