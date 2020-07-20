@@ -321,7 +321,7 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=1):
     notes, frames = piano_roll.shape
     pm = pretty_midi.PrettyMIDI()
     #program = pretty_midi.instrument_name_to_program('Cello')
-    instrument = pretty_midi.Instrument(program=25)
+    instrument = pretty_midi.Instrument(program=program)
     # print("  (0) PR Shape: {}".format(piano_roll.shape))
 
     # pad 1 column of zeros so we can acknowledge inital and ending events

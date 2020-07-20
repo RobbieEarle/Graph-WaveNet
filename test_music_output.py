@@ -59,7 +59,7 @@ def main():
         for row in range(128):
             piano_adj[row] = frequencies - frequencies[row]
 
-    elif args.dataset == 'bch' or args.dataset == 'single' or args.dataset == 'single_p' or args.dataset == 'press_lift':
+    else:
         positions = np.arange(12)
         # frequencies = np.array(
         #     [261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 391.99, 415.31, 440.00, 466.16, 493.88])
@@ -121,13 +121,20 @@ def main():
             pr_data[3, i] = 70
 
     elif args.dataset == 'press_lift':
-        print("Generate music: press 2 sec, lift 2 sec, iterate")
+        print("Testing music: press 2 sec, lift 2 sec, iterate")
         pr_data = np.zeros((12, 101))
         for i in range(101):
             if i %4 < 2:
                 pr_data[3, i] = 1
             else:
                 pr_data[4, i] = 1
+
+    elif args.dataset == 'dual_press':
+        print("Testing: Dual pressing")
+        pr_data = np.zeros((12, 101))
+        pr_data[3, :] = 1
+        pr_data[8, :] = 1
+
 
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]

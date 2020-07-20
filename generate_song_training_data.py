@@ -91,6 +91,11 @@ def generate_train_val_test(args):
             else:
                 pr_data[i, 4] = 1
 
+    elif args.dataset == 'dual_press':
+        print("Dual pressing")
+        pr_data = np.zeros((5665, 12))
+        pr_data[:, 3] = 1
+        pr_data[:, 8] = 1
 
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
