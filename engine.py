@@ -31,6 +31,9 @@ class trainer():
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         # self.loss = util.bob_loss
         self.loss = util.masked_mae
+        for name, param in self.model.named_parameters():
+            if param.requires_grad:
+                print(name, param.data)
         self.clip = 5
 
     def train(self, input, real_val):
