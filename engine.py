@@ -29,8 +29,8 @@ class trainer():
         #     self.fhooks[name] = module.register_forward_hook(util.hook_f)
         #     self.bhooks[name] = module.register_forward_hook(util.hook_b)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
-        # self.loss = util.bob_loss
-        self.loss = util.masked_mae
+        self.loss = util.bob_loss
+        # self.loss = util.masked_mae
         for name, param in self.model.named_parameters():
             if param.requires_grad:
                 print(name)
@@ -50,7 +50,7 @@ class trainer():
         real = torch.unsqueeze(real_val,dim=1)
         predict = output
 
-        loss = self.loss(predict, real, w=100)
+        loss = self.loss(predict, real, w=10000)
         loss.backward()
         if self.clip is not None:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
@@ -67,7 +67,7 @@ class trainer():
         #output = [batch_size,12,num_nodes,1]
         real = torch.unsqueeze(real_val,dim=1)
         predict = output
-        loss = self.loss(predict, real, w=100)
+        loss = self.loss(predict, real, w=10000)
         mape = util.masked_mape(predict,real,0.0).item()
         rmse = util.masked_rmse(predict,real,0.0).item()
         return loss.item(),mape,rmse
