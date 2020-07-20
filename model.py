@@ -135,7 +135,7 @@ class gwnet(nn.Module):
 
         self.receptive_field = receptive_field
 
-        self.round_threshold = nn.Parameter(torch.rand(1).to(device), requires_grad=True).to(device)
+        self.threshold_alpha_prime = nn.Parameter(torch.rand(1).to(device), requires_grad=True).to(device)
 
     def forward(self, input):
         # print("(0) Input: {}".format(input.shape))
@@ -219,12 +219,13 @@ class gwnet(nn.Module):
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
 
-        x = torch.sigmoid(x) + self.round_threshold
+        threshold_alpha = torch.sigmoid(self.threshold_alpha_prime)
+        x = torch.sigmoid(x)
         # print(x[0, :, :, 0])
-        # x = torch.where(x > self.round_threshold, torch.ones_like(x, requires_grad=True).to(self.device),
-        #                 torch.zeros_like(x, requires_grad=True).to(self.device))
+        x = torch.where(x >= threshold_alpha, torch.floor(x + 1), torch.ceil(x - 1))
         # print(x[0, :, :, 0])
-        print(self.round_threshold)
+        # x = x.round()
+        print(self.threshold_alpha_prime)
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
 
