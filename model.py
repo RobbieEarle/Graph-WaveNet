@@ -61,6 +61,7 @@ class gwnet(nn.Module):
         self.skip_convs = nn.ModuleList()
         self.bn = nn.ModuleList()
         self.gconv = nn.ModuleList()
+        self.device = device
 
         self.start_conv = nn.Conv2d(in_channels=in_dim,
                                     out_channels=residual_channels,
@@ -220,7 +221,8 @@ class gwnet(nn.Module):
 
         x = torch.sigmoid(x)
         # print(x[0, :, :, 0])
-        x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
+        x = torch.where(x > self.round_threshold, torch.ones_like(x, requires_grad=True).to(self.device),
+                        torch.zeros_like(x, requires_grad=True).to(self.device))
         # print(x[0, :, :, 0])
         print(self.round_threshold)
         # x = torch.sigmoid(x)
