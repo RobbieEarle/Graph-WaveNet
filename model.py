@@ -235,9 +235,6 @@ class gwnet(nn.Module):
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
 
-        print(x)
-        print("324"+234)
-
         return x
 
 
