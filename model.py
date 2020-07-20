@@ -145,9 +145,9 @@ class gwnet(nn.Module):
         else:
             x = input
         # print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
-        print("1 - " + str(x.shape))
+        # print("1 - " + str(x.shape))
         x = self.start_conv(x)
-        print("2 - " + str(x.shape))
+        # print("2 - " + str(x.shape))
         skip = 0
         # print("234"+234)
         # calculate the current adaptive adj matrix once per iteration
@@ -181,7 +181,7 @@ class gwnet(nn.Module):
             gate = self.gate_convs[i](residual)
             gate = torch.sigmoid(gate)
             x = filter * gate
-            print("3." + str(i) + ".1 - " + str(x.shape))
+            # print("3." + str(i) + ".1 - " + str(x.shape))
             # parametrized skip connection
 
             s = x
@@ -200,32 +200,29 @@ class gwnet(nn.Module):
             else:
                 x = self.residual_convs[i](x)
 
-            print("3." + str(i) + ".2 - " + str(x.shape))
+            # print("3." + str(i) + ".2 - " + str(x.shape))
             x = x + residual[:, :, :, -x.size(3):]
-            print("3." + str(i) + ".3 - " + str(x.shape))
+            # print("3." + str(i) + ".3 - " + str(x.shape))
 
             x = self.bn[i](x)
-            print("3." + str(i) + ".4 - " + str(x.shape))
+            # print("3." + str(i) + ".4 - " + str(x.shape))
 
             # print("234" + 234)
 
-        print("4 - " + str(x.shape))
+        # print("4 - " + str(x.shape))
         x = F.tanh(skip)
-        print("5 - " + str(x.shape))
+        # print("5 - " + str(x.shape))
         x = F.tanh(self.end_conv_1(x))
-        print("6 - " + str(x.shape))
+        # print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
-        print("7 - " + str(x.shape))
-        print(x[0, :, :, 0])
+        # print("7 - " + str(x.shape))
+        # print(x[0, :, :, 0])
 
         x = torch.sigmoid(x)
-        print(x[0, :, :, 0])
+        # print(x[0, :, :, 0])
         x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
-        print(x[0, :, :, 0])
-        # print(x.shape)
-        # print(x[0, 0, ...])
+        # print(x[0, :, :, 0])
         print(self.round_threshold)
-        print("234"+234)
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
 
