@@ -220,7 +220,7 @@ class gwnet(nn.Module):
 
         x = torch.sigmoid(x)
         # print(x[0, :, :, 0])
-        # x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
+        x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
         # print(x[0, :, :, 0])
         print(self.round_threshold)
         # x = torch.sigmoid(x)
