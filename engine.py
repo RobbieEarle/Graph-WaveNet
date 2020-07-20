@@ -30,7 +30,7 @@ class trainer():
         #     self.bhooks[name] = module.register_forward_hook(util.hook_b)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         # self.loss = util.bob_loss
-        self.loss = util.masked_mae()
+        self.loss = util.masked_mae
         self.clip = 5
 
     def train(self, input, real_val):
