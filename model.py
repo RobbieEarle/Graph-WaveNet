@@ -222,7 +222,7 @@ class gwnet(nn.Module):
         threshold_alpha = torch.sigmoid(self.threshold_alpha_prime)
         x = torch.sigmoid(x)
         print(x[0, :, :, 0])
-        x = torch.where(x >= threshold_alpha, torch.floor(x + 1), torch.ceil(x - 1))
+        x = torch.where(x >= threshold_alpha, 1 + x - x, x - x)
         print(x[0, :, :, 0])
         # x = x.round()
         print(self.threshold_alpha_prime)
