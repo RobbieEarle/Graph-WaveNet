@@ -177,12 +177,12 @@ def main():
     print("  Done")
 
     print("Saving data...")
-    np.save('MODEL_audio_sample', sample_audio)
-    np.save('MODEL_audio_sample_label', sample_label_audio)
-    np.save('MODEL_audio_generated', generated_audio)
-    np.save('MODEL_pr_sample', pr_sample)
-    np.save('MODEL_pr_sample_label', pr_sample_label)
-    np.save('MODEL_pr_generated', prediction)
+    np.save('MODEL_audio_sample'+str(args.checkpoint), sample_audio)
+    np.save('MODEL_audio_sample_label'+str(args.checkpoint), sample_label_audio)
+    np.save('MODEL_audio_generated'+str(args.checkpoint), generated_audio)
+    np.save('MODEL_pr_sample'+str(args.checkpoint), pr_sample)
+    np.save('MODEL_pr_sample_label'+str(args.checkpoint), pr_sample_label)
+    np.save('MODEL_pr_generated'+str(args.checkpoint), prediction)
     print("  Done")
 
 
