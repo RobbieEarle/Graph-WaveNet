@@ -132,6 +132,7 @@ def main():
     model_in = model_in.transpose(1, 3)
     with torch.no_grad():
         preds = model(model_in).transpose(1, 3)
+        preds = torch.where(preds >= 0.5, torch.ceil(preds), torch.floor(preds))
     print("  Done")
 
     print("Synthesizing audio...")
