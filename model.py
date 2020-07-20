@@ -221,6 +221,8 @@ class gwnet(nn.Module):
 
         threshold_alpha = torch.sigmoid(self.threshold_alpha_prime)
         x = torch.sigmoid(x)
+        dist = torch.distributions.bernoulli.Bernoulli(x)
+        x = dist.sample()
         # print(x[0, :, :, 0])
         # x = x + threshold_alpha
         # # x = torch.floor(x)
@@ -233,7 +235,8 @@ class gwnet(nn.Module):
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
 
-        # print("324"+234)
+        print(x)
+        print("324"+234)
 
         return x
 
