@@ -216,18 +216,20 @@ class gwnet(nn.Module):
         x = F.tanh(self.end_conv_1(x))
         # print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
-        # print("7 - " + str(x.shape))
-        # print(x[0, :, :, 0])
+        print("7 - " + str(x.shape))
+        print(x[0, :, :, 0])
 
         threshold_alpha = torch.sigmoid(self.threshold_alpha_prime)
         x = torch.sigmoid(x)
-        # print(x[0, :, :, 0])
+        print(x[0, :, :, 0])
         x = torch.where(x >= threshold_alpha, torch.floor(x + 1), torch.ceil(x - 1))
-        # print(x[0, :, :, 0])
+        print(x[0, :, :, 0])
         # x = x.round()
         print(self.threshold_alpha_prime)
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
+
+        print("324"+234)
 
         return x
 
