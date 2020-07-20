@@ -215,6 +215,7 @@ class gwnet(nn.Module):
         x = F.tanh(self.end_conv_1(x))
         print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
+        print("7 - " + str(x.shape))
 
         x = torch.sigmoid(x)
         x = torch.where(x > self.round_threshold, torch.ones_like(x), torch.zeros_like(x))
