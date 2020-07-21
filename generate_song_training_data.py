@@ -61,8 +61,8 @@ def generate_train_val_test(args):
             velocities = np.expand_dims(velocities, axis=1)
             pr_data = velocities * pr_data
 
-    print(pr_data.shape)
-    print(pr_data.T[:, :25])
+    # print(pr_data.shape)
+    # print(pr_data.T[:, :25])
 
     if args.num_train_samples > 0:
         pr_data = pr_data[:args.num_train_samples, :]
@@ -80,10 +80,10 @@ def generate_train_val_test(args):
         add_day_in_week=args.dow,
     )
 
-    print(x.shape)
-    print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
-    print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
-    print("324"+1234)
+    # print(x.shape)
+    # print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print("324"+1234)
 
     if args.num_train_samples > 0:
         x = np.tile(x, (args.num_sample_duplicates, 1, 1, 1))
