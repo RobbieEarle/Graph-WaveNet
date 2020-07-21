@@ -77,6 +77,9 @@ def generate_train_val_test(args):
         add_day_in_week=args.dow,
     )
 
+    print(x.shape)
+    print("324"+1234)
+
     if args.num_train_samples > 0:
         x = np.tile(x, (args.num_sample_duplicates, 1, 1, 1))
         y = np.tile(y, (args.num_sample_duplicates, 1, 1, 1))
