@@ -78,6 +78,8 @@ def generate_train_val_test(args):
     )
 
     print(x.shape)
+    print(x[:5, :5, :5, 0])
+    print(y[:5, :5, :5, 0])
     print("324"+1234)
 
     if args.num_train_samples > 0:
