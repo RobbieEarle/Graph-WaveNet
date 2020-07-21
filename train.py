@@ -63,7 +63,8 @@ def main():
     # print('loading')
 
     device = torch.device(args.device)
-    adj_mx = util.load_piano_adj(piano_adj, args.adjtype)
+    # adj_mx = util.load_piano_adj(piano_adj, args.adjtype)
+    adj_mx = piano_adj
     dataloader = util.load_dataset(args.data, args.batch_size, args.batch_size, args.batch_size)
     supports = [torch.tensor(i).to(device) for i in adj_mx]
 
