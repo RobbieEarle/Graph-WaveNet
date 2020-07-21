@@ -80,9 +80,9 @@ def generate_train_val_test(args):
         add_day_in_week=args.dow,
     )
 
-    # print(x.shape)
-    # print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
-    # print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
+    print("x shape: ", x.shape, ", y shape: ", y.shape)
+    print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
+    print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
     # print("324"+1234)
 
     if args.num_train_samples > 0:
@@ -90,6 +90,8 @@ def generate_train_val_test(args):
         y = np.tile(y, (args.num_sample_duplicates, 1, 1, 1))
 
     print("x shape: ", x.shape, ", y shape: ", y.shape)
+    print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
+    print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
 
     # Write the data into npz file.
     num_samples = x.shape[0]
