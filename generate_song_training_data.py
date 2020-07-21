@@ -62,7 +62,7 @@ def generate_train_val_test(args):
             pr_data = velocities * pr_data
 
     print(pr_data.shape)
-    print(pr_data)
+    print(pr_data.T[:, :25])
 
     if args.num_train_samples > 0:
         pr_data = pr_data[:args.num_train_samples, :]
