@@ -61,6 +61,9 @@ def generate_train_val_test(args):
             velocities = np.expand_dims(velocities, axis=1)
             pr_data = velocities * pr_data
 
+    print(pr_data.shape)
+    print(pr_data)
+
     if args.num_train_samples > 0:
         pr_data = pr_data[:args.num_train_samples, :]
 
