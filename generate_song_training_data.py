@@ -80,18 +80,18 @@ def generate_train_val_test(args):
         add_day_in_week=args.dow,
     )
 
-    print("x shape: ", x.shape, ", y shape: ", y.shape)
-    print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
-    print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print("x shape: ", x.shape, ", y shape: ", y.shape)
+    # print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
     # print("324"+1234)
 
     if args.num_train_samples > 0:
         x = np.tile(x, (args.num_sample_duplicates, 1, 1, 1))
         y = np.tile(y, (args.num_sample_duplicates, 1, 1, 1))
 
-    print("x shape: ", x.shape, ", y shape: ", y.shape)
-    print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
-    print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print("x shape: ", x.shape, ", y shape: ", y.shape)
+    # print('x: {}'.format(np.transpose(x, (0, 2, 1, 3))[:5, :, :, 0]))
+    # print('y: {}'.format(np.transpose(y, (0, 2, 1, 3))[:5, :, :, 0]))
 
     # Write the data into npz file.
     num_samples = x.shape[0]
@@ -110,15 +110,11 @@ def generate_train_val_test(args):
     x_test, y_test = x[-num_test:], y[-num_test:]
     datasets = ["train", "val", "test"]
 
-    # print(x_train.shape)
-    # print(x[0, :, :, 0])
-
-    print("x: {}".format(x_train[:10, 0, :, 0]))
-    print("y: {}".format(y_train[:10, 0, :, 0]))
+    # print("x: {}".format(x_train[:10, 0, :, 0]))
+    # print("y: {}".format(y_train[:10, 0, :, 0]))
 
     for cat in datasets:
         _x, _y = locals()["x_" + cat], locals()["y_" + cat]
-        # print(_x[2347, :, :, 0])
         print(cat, "x: ", _x.shape, "y:", _y.shape)
         np.savez_compressed(
             os.path.join(args.output_dir, f"{cat}.npz"),
