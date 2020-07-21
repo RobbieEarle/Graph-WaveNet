@@ -175,14 +175,14 @@ def main():
     midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
     sample_label_audio = midi_sample_label.synthesize(fs=16000)
     print("  Done")
-
+    garage_name = args.checkpoint.split('/')[-1]
     print("Saving data...")
-    np.save('MODEL_audio_sample'+str(args.checkpoint), sample_audio)
-    np.save('MODEL_audio_sample_label'+str(args.checkpoint), sample_label_audio)
-    np.save('MODEL_audio_generated'+str(args.checkpoint), generated_audio)
-    np.save('MODEL_pr_sample'+str(args.checkpoint), pr_sample)
-    np.save('MODEL_pr_sample_label'+str(args.checkpoint), pr_sample_label)
-    np.save('MODEL_pr_generated'+str(args.checkpoint), prediction)
+    np.save('MODEL_audio_sample'+str(garage_name), sample_audio)
+    np.save('MODEL_audio_sample_label'+str(garage_name), sample_label_audio)
+    np.save('MODEL_audio_generated'+str(garage_name), generated_audio)
+    np.save('MODEL_pr_sample'+str(garage_name), pr_sample)
+    np.save('MODEL_pr_sample_label'+str(garage_name), pr_sample_label)
+    np.save('MODEL_pr_generated'+str(garage_name), prediction)
     print("  Done")
 
 
