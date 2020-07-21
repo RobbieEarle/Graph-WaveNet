@@ -52,6 +52,7 @@ class trainer():
         loss = self.loss(predict, real, w=1000)
         # print(loss)
         loss.backward()
+        print(self.clip)
         if self.clip is not None:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
         self.optimizer.step()
