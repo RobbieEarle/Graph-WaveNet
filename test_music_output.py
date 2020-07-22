@@ -177,7 +177,7 @@ def main():
     print("  Done")
     garage_name = args.checkpoint.split('/')[-1]
     print("Saving data...")
-    #+str(garage_name)
+
     np.save('MODEL_audio_sample', sample_audio)
     np.save('MODEL_audio_sample_label', sample_label_audio)
     np.save('MODEL_audio_generated', generated_audio)
@@ -185,6 +185,7 @@ def main():
     np.save('MODEL_pr_sample_label', pr_sample_label)
     np.save('MODEL_pr_generated', prediction)
     print("  Done")
+    # +str(garage_name)
 
 
 
