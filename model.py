@@ -13,6 +13,7 @@ class nconv(nn.Module):
         x = torch.einsum('ncvl,vw->ncwl',(x,A))
         return x.contiguous()
 
+
 class linear(nn.Module):
     def __init__(self,c_in,c_out):
         super(linear,self).__init__()
@@ -20,6 +21,7 @@ class linear(nn.Module):
 
     def forward(self,x):
         return self.mlp(x)
+
 
 class gcn(nn.Module):
     def __init__(self,c_in,c_out,dropout,support_len=3,order=2):
@@ -219,7 +221,7 @@ class gwnet(nn.Module):
         x = self.end_conv_2(x)
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
-        x = self.end_batch_norm(x)
+        # x = self.end_batch_norm(x)
         x = torch.sigmoid(x)
         # dist = torch.distributions.bernoulli.Bernoulli(x)
         # x = dist.sample()

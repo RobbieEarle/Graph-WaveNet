@@ -97,7 +97,7 @@ def main():
         pr_data = midi_data.get_piano_roll(fs=20)
     elif args.dataset == 'bch':
         bch_df = pd.read_csv(args.raw_data_path)
-        # bch_df = bch_df[bch_df['choral_ID'] == args.choral_ID]
+        bch_df = bch_df[bch_df['choral_ID'] == args.choral_ID]
         pitches_df = bch_df.iloc[:, 2:14]
         pitches_df = pitches_df.applymap(lambda x: 1 if x == 'YES' else 0)
         pr_data = pitches_df.to_numpy()
