@@ -124,7 +124,7 @@ def main():
                 log = 'Iter: {:03d}, Train Loss: {:.4f}, Train MAPE: {:.4f}, Train RMSE: {:.4f}'
                 print(log.format(iter, train_loss[-1], train_mape[-1], train_rmse[-1]),flush=True)
                 if i == 1:
-                    torch.save(engine.model.state_dict(), args.save + "_iter_" + str(i)+"."+str(iter))
+                    torch.save(engine.model.state_dict(), args.save + "_iter_" + str(i)+"."+str(iter)+".pth")
                 #
         t2 = time.time()
         train_time.append(t2-t1)
