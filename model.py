@@ -133,6 +133,8 @@ class gwnet(nn.Module):
                                     kernel_size=(1,1),
                                     bias=True)
 
+        self.end_batch_norm = nn.BatchNorm2d(out_dim)
+
         self.receptive_field = receptive_field
 
         # self.threshold_alpha_prime = nn.Parameter(torch.zeros(1).to(device), requires_grad=True).to(device)
@@ -212,9 +214,6 @@ class gwnet(nn.Module):
 
         # print("4 - " + str(x.shape))
 
-        residual = x
-        print(residual.shape)
-
         x = F.tanh(skip)
         # print("5 - " + str(x.shape))
         x = F.tanh(self.end_conv_1(x))
@@ -222,10 +221,8 @@ class gwnet(nn.Module):
         x = self.end_conv_2(x)
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
-
+        x = self.end_batch_norm(x)
         x = torch.sigmoid(x)
-        print(x.shape)
-        print("234"+234)
         # dist = torch.distributions.bernoulli.Bernoulli(x)
         # x = dist.sample()
         # print(x[0, :, :, 0])
