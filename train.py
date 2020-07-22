@@ -123,6 +123,8 @@ def main():
             if iter % args.print_every == 0 :
                 log = 'Iter: {:03d}, Train Loss: {:.4f}, Train MAPE: {:.4f}, Train RMSE: {:.4f}'
                 print(log.format(iter, train_loss[-1], train_mape[-1], train_rmse[-1]),flush=True)
+                if i == 1:
+                    torch.save(engine.model.state_dict(), args.save + "_iter_" + str(i))
                 #
         t2 = time.time()
         train_time.append(t2-t1)
@@ -158,7 +160,7 @@ def main():
         log = 'Epoch: {:03d}, Train Loss: {:.4f}, Train MAPE: {:.4f}, Train RMSE: {:.4f}, Valid Loss: {:.4f}, Valid MAPE: {:.4f}, Valid RMSE: {:.4f}, Training Time: {:.4f}/epoch'
         print(log.format(i, mtrain_loss, mtrain_mape, mtrain_rmse, mvalid_loss, mvalid_mape, mvalid_rmse, (t2 - t1)),
               flush=True)
-        torch.save(engine.model.state_dict(), args.save+"_epoch_"+str(i)+save_index) #"_"+str(round(mvalid_loss,2))+"_" + str(
+        torch.save(engine.model.state_dict(), args.save+"_epoch_"+str(i)) #"_"+str(round(mvalid_loss,2))+"_" + str(
             # round(mtrain_loss, 2)) + ".pth")
         save_index += 1
     print("Average Training Time: {:.4f} secs/epoch".format(np.mean(train_time)))
