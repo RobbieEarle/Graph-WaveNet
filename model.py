@@ -142,17 +142,17 @@ class gwnet(nn.Module):
         # self.threshold_alpha_prime = nn.Parameter(torch.zeros(1).to(device), requires_grad=True).to(device)
 
     def forward(self, input):
-        # print("(0) Input: {}".format(input.shape))
+        print("(0) Input: {}".format(input.shape))
         in_len = input.size(3)
         # print(in_len, input.size(3))
         if in_len < self.receptive_field:
             x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
         else:
             x = input
-        # print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
+        print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
         # print("1 - " + str(x.shape))
         x = self.start_conv(x)
-        # print("2 - " + str(x.shape))
+        print("2 - " + str(x.shape))
         skip = 0
         # print("234"+234)
         # calculate the current adaptive adj matrix once per iteration
@@ -162,7 +162,7 @@ class gwnet(nn.Module):
             new_supports = self.supports + [adp]
 
         # WaveNet layers
-        # print(self.blocks, self.layers)
+        print(self.blocks, self.layers)
         for i in range(self.blocks * self.layers):
 
             #            |----------------------------------------|     *residual*
@@ -184,7 +184,7 @@ class gwnet(nn.Module):
             gate = self.gate_convs[i](residual)
             gate = torch.sigmoid(gate)
             x = filter * gate
-            # print("3." + str(i) + ".1 - " + str(x.shape))
+            print("3." + str(i) + ".1 - " + str(x.shape))
             # parametrized skip connection
 
             s = x
@@ -203,23 +203,23 @@ class gwnet(nn.Module):
             else:
                 x = self.residual_convs[i](x)
 
-            # print("3." + str(i) + ".2 - " + str(x.shape))
+            print("3." + str(i) + ".2 - " + str(x.shape))
             x = x + residual[:, :, :, -x.size(3):]
-            # print("3." + str(i) + ".3 - " + str(x.shape))
+            print("3." + str(i) + ".3 - " + str(x.shape))
 
             x = self.bn[i](x)
-            # print("3." + str(i) + ".4 - " + str(x.shape))
+            print("3." + str(i) + ".4 - " + str(x.shape))
 
             # print("234" + 234)
 
-        # print("4 - " + str(x.shape))
+        print("4 - " + str(x.shape))
 
         x = F.tanh(skip)
-        # print("5 - " + str(x.shape))
+        print("5 - " + str(x.shape))
         x = F.tanh(self.end_conv_1(x))
-        # print("6 - " + str(x.shape))
+        print("6 - " + str(x.shape))
         x = self.end_conv_2(x)
-        # print("7 - " + str(x.shape))
+        print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
         # x = self.end_batch_norm(x)
         x = torch.sigmoid(x)
@@ -236,7 +236,7 @@ class gwnet(nn.Module):
         # print()
         # x = torch.sigmoid(x)
         # x = torch.bernoulli(x)
-
+        print("w2431"+1234)
         return x
 
 
