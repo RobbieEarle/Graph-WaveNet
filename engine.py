@@ -24,11 +24,11 @@ class trainer():
                            dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
 
-        # self.fhooks = {}
-        # self.bhooks = {}
-        # for name, module in self.model.named_modules():
-        #     # self.fhooks[name] = module.register_forward_hook(util.hook_f)
-        #     self.bhooks[name] = module.register_backward_hook(util.hook_b)
+        self.fhooks = {}
+        self.bhooks = {}
+        for name, module in self.model.named_modules():
+            # self.fhooks[name] = module.register_forward_hook(util.hook_f)
+            self.bhooks[name] = module.register_backward_hook(util.hook_b)
 
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
         self.loss = util.bob_loss
