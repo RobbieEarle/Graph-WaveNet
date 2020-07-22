@@ -219,7 +219,7 @@ class gwnet(nn.Module):
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
 
-        x = torch.sigmoid(x)
+        # x = torch.sigmoid(x)
         # dist = torch.distributions.bernoulli.Bernoulli(x)
         # x = dist.sample()
         # print(x[0, :, :, 0])
