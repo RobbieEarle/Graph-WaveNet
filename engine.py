@@ -19,7 +19,8 @@ class trainer():
         # print(nhid * 8)
         # print(nhid * 16)
         # print("-----")
-        self.model = gwnet(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj,
+
+        self.model = GWNet2(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj,
                            aptinit=aptinit, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid,
                            dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
@@ -31,8 +32,8 @@ class trainer():
             self.bhooks[name] = module.register_backward_hook(util.hook_b)
 
         self.optimizer = optim.Adam(self.model.parameters(), lr=lrate, weight_decay=wdecay)
-        self.loss = util.bob_loss
-        # self.loss = util.masked_mae
+        # self.loss = util.bob_loss
+        self.loss = util.masked_mae
         self.clip = 5
 
     def train(self, input, real_val):
