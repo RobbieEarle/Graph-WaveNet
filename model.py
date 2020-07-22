@@ -211,6 +211,10 @@ class gwnet(nn.Module):
             # print("234" + 234)
 
         # print("4 - " + str(x.shape))
+
+        residual = x
+        print(residual.shape)
+
         x = F.tanh(skip)
         # print("5 - " + str(x.shape))
         x = F.tanh(self.end_conv_1(x))
@@ -219,7 +223,9 @@ class gwnet(nn.Module):
         # print("7 - " + str(x.shape))
         # print(x[0, :, :, 0])
 
-        # x = torch.sigmoid(x)
+        x = torch.sigmoid(x)
+        print(x.shape)
+        print("234"+234)
         # dist = torch.distributions.bernoulli.Bernoulli(x)
         # x = dist.sample()
         # print(x[0, :, :, 0])
