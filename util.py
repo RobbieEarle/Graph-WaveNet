@@ -28,6 +28,8 @@ def hook_f(module, input, output):
 
 
 def hook_b(module, input, output):
+    print(input)
+    print(output)
     if torch.isnan(input[0]).any() or torch.isnan(output[0]).any():
         print("B ----- {}".format(module))
         print("{}".format(len(input)))
