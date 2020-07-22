@@ -20,7 +20,7 @@ class trainer():
         # print(nhid * 16)
         # print("-----")
 
-        self.model = GWNet2(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj,
+        self.model = GWNet2(device, num_nodes, dropout, supports=supports, addaptadj=addaptadj,
                            aptinit=aptinit, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid,
                            dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
         self.model.to(device)
