@@ -159,8 +159,6 @@ class gwnet(nn.Module):
             adp = F.softmax(F.tanh(torch.mm(self.nodevec1, self.nodevec2)), dim=1)
             new_supports = self.supports + [adp]
 
-        print(x.shape)
-
         # WaveNet layers
         # print(self.blocks, self.layers)
         for i in range(self.blocks * self.layers):
