@@ -120,9 +120,12 @@ def main():
             train_loss.append(metrics[0])
             train_mape.append(metrics[1])
             train_rmse.append(metrics[2])
+            if i== 1 and iter <= 100:
+                torch.save(engine.model.state_dict(), args.save + "_iter_" + str(i) + "." + str(iter) + ".pth")
             if iter % args.print_every == 0 :
                 log = 'Iter: {:03d}, Train Loss: {:.4f}, Train MAPE: {:.4f}, Train RMSE: {:.4f}'
                 print(log.format(iter, train_loss[-1], train_mape[-1], train_rmse[-1]),flush=True)
+
                 #
         t2 = time.time()
         train_time.append(t2-t1)
