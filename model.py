@@ -172,203 +172,203 @@ class gcn(nn.Module):
         return h
 
 
-# class gwnet(nn.Module):
-#     def __init__(self, device, num_nodes, dropout=0.3, supports=None, gcn_bool=True, addaptadj=True, aptinit=None, in_dim=1,out_dim=12,residual_channels=32,dilation_channels=32,skip_channels=256,end_channels=512,kernel_size=2,blocks=4,layers=2):
-#         super(gwnet, self).__init__()
-#
-#         self.dropout = dropout
-#         self.blocks = blocks
-#         self.layers = layers
-#         self.gcn_bool = gcn_bool
-#         self.addaptadj = addaptadj
-#
-#         self.filter_convs = nn.ModuleList()
-#         self.gate_convs = nn.ModuleList()
-#         self.residual_convs = nn.ModuleList()
-#         self.skip_convs = nn.ModuleList()
-#         self.bn = nn.ModuleList()
-#         self.gconv = nn.ModuleList()
-#         self.device = device
-#
-#         self.start_conv = nn.Conv2d(in_channels=in_dim,
-#                                     out_channels=residual_channels,
-#                                     kernel_size=(1,1))
-#         self.supports = supports
-#
-#         receptive_field = 1
-#
-#         self.supports_len = 0
-#         if supports is not None:
-#             self.supports_len += len(supports)
-#
-#         if gcn_bool and addaptadj:
-#             if aptinit is None:
-#                 if supports is None:
-#                     self.supports = []
-#                 self.nodevec1 = nn.Parameter(torch.randn(num_nodes, 10).to(device), requires_grad=True).to(device)
-#                 self.nodevec2 = nn.Parameter(torch.randn(10, num_nodes).to(device), requires_grad=True).to(device)
-#                 self.supports_len +=1
-#             else:
-#                 if supports is None:
-#                     self.supports = []
-#                 m, p, n = torch.svd(aptinit)
-#                 initemb1 = torch.mm(m[:, :10], torch.diag(p[:10] ** 0.5))
-#                 initemb2 = torch.mm(torch.diag(p[:10] ** 0.5), n[:, :10].t())
-#                 self.nodevec1 = nn.Parameter(initemb1, requires_grad=True).to(device)
-#                 self.nodevec2 = nn.Parameter(initemb2, requires_grad=True).to(device)
-#                 self.supports_len += 1
-#
-#         print("Kernel Size: {}".format(kernel_size))
-#
-#         for b in range(blocks):
-#             additional_scope = kernel_size - 1
-#             new_dilation = 1
-#             for i in range(layers):
-#                 # dilated convolutions
-#                 self.filter_convs.append(nn.Conv2d(in_channels=residual_channels,
-#                                                    out_channels=dilation_channels,
-#                                                    kernel_size=(1,kernel_size), dilation=new_dilation))
-#
-#                 self.gate_convs.append(nn.Conv1d(in_channels=residual_channels,
-#                                                  out_channels=dilation_channels,
-#                                                  kernel_size=(1, kernel_size), dilation=new_dilation))
-#
-#                 # 1x1 convolution for residual connection
-#                 self.residual_convs.append(nn.Conv1d(in_channels=dilation_channels,
-#                                                      out_channels=residual_channels,
-#                                                      kernel_size=(1, 1)))
-#
-#                 # 1x1 convolution for skip connection
-#                 self.skip_convs.append(nn.Conv1d(in_channels=dilation_channels,
-#                                                  out_channels=skip_channels,
-#                                                  kernel_size=(1, 1)))
-#                 self.bn.append(nn.BatchNorm2d(residual_channels))
-#                 new_dilation *=2
-#                 receptive_field += additional_scope
-#                 additional_scope *= 2
-#                 if self.gcn_bool:
-#                     self.gconv.append(gcn(dilation_channels,residual_channels,dropout,support_len=self.supports_len))
-#
-#         self.end_conv_1 = nn.Conv2d(in_channels=skip_channels,
-#                                   out_channels=end_channels,
-#                                   kernel_size=(1,1),
-#                                   bias=True)
-#
-#         self.end_conv_2 = nn.Conv2d(in_channels=end_channels,
-#                                     out_channels=out_dim,
-#                                     kernel_size=(1,1),
-#                                     bias=True)
-#
-#         self.end_batch_norm = nn.BatchNorm2d(out_dim)
-#
-#         self.receptive_field = receptive_field
-#
-#         # self.threshold_alpha_prime = nn.Parameter(torch.zeros(1).to(device), requires_grad=True).to(device)
-#
-#     def forward(self, input):
-#         print("(0) Input: {}".format(input.shape))
-#         in_len = input.size(3)
-#         # print(in_len, input.size(3))
-#         if in_len < self.receptive_field:
-#             x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
-#         else:
-#             x = input
-#         print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
-#         # print("1 - " + str(x.shape))
-#         x = self.start_conv(x)
-#         print("2 - " + str(x.shape))
-#         skip = 0
-#         # print("234"+234)
-#         # calculate the current adaptive adj matrix once per iteration
-#         new_supports = None
-#         if self.gcn_bool and self.addaptadj and self.supports is not None:
-#             adp = F.softmax(torch.tanh(torch.mm(self.nodevec1, self.nodevec2)), dim=1)
-#             new_supports = self.supports + [adp]
-#
-#         # WaveNet layers
-#         print(self.blocks, self.layers)
-#         for i in range(self.blocks * self.layers):
-#
-#             #            |----------------------------------------|     *residual*
-#             #            |                                        |
-#             #            |    |-- conv -- tanh --|                |
-#             # -> dilate -|----|                  * ----|-- 1x1 -- + -->	*input*
-#             #                 |-- conv -- sigm --|     |
-#             #                                         1x1
-#             #                                          |
-#             # ---------------------------------------> + ------------->	*skip*
-#
-#             #(dilation, init_dilation) = self.dilations[i]
-#
-#             #residual = dilation_func(x, dilation, init_dilation, i)
-#             residual = x
-#             # dilated convolution
-#             filter = self.filter_convs[i](residual)
-#             print("  Filter: {}".format(filter.shape))
-#             filter = torch.tanh(filter)
-#             gate = self.gate_convs[i](residual)
-#             print("  Gate Shape: {}".format(gate.shape))
-#             # print("    Gate: {}".format(gate[0, 0, :5, :5]))
-#             gate = torch.sigmoid(gate)
-#             x = filter * gate
-#             print("3." + str(i) + ".1 - " + str(x.shape))
-#             # parametrized skip connection
-#
-#             s = x
-#
-#             if x.size(2) != 1:
-#                 s = dilate(x, 1, init_dilation=dilation)
-#
-#             s = self.skip_convs[i](s)
-#             try:
-#                 skip = skip[:, :, :,  -s.size(3):]
-#             except:
-#                 skip = 0
-#             skip = s + skip
-#
-#             if self.gcn_bool and self.supports is not None:
-#                 if self.addaptadj:
-#                     x = self.gconv[i](x, new_supports)
-#                 else:
-#                     x = self.gconv[i](x,self.supports)
-#             else:
-#                 x = self.residual_convs[i](x)
-#
-#             print("3." + str(i) + ".2 - " + str(x.shape))
-#             x = x + residual[:, :, :, -x.size(3):]
-#             print("3." + str(i) + ".3 - " + str(x.shape))
-#
-#             x = self.bn[i](x)
-#             print("3." + str(i) + ".4 - " + str(x.shape))
-#
-#             # print("234" + 234)
-#
-#         print("4 - " + str(x.shape))
-#
-#         x = F.tanh(skip)
-#         print("5 - " + str(x.shape))
-#         x = F.tanh(self.end_conv_1(x))
-#         print("6 - " + str(x.shape))
-#         x = self.end_conv_2(x)
-#         print("7 - " + str(x.shape))
-#         # print(x[0, :, :, 0])
-#         # x = self.end_batch_norm(x)
-#         x = torch.sigmoid(x)
-#         # dist = torch.distributions.bernoulli.Bernoulli(x)
-#         # x = dist.sample()
-#         # print(x[0, :, :, 0])
-#         # x = x + threshold_alpha
-#         # # x = torch.floor(x)
-#         # # x = torch.where(x >= threshold_alpha, torch.ceil(x), torch.floor(x))
-#         # print(x[0, :, :, 0])
-#         # # x = x.round()
-#         # print(self.threshold_alpha_prime)
-#         # print(threshold_alpha)
-#         # print()
-#         # x = torch.sigmoid(x)
-#         # x = torch.bernoulli(x)
-#         print("w2431"+1234)
-#         return x
+class gwnet(nn.Module):
+    def __init__(self, device, num_nodes, dropout=0.3, supports=None, gcn_bool=True, addaptadj=True, aptinit=None, in_dim=1,out_dim=12,residual_channels=32,dilation_channels=32,skip_channels=256,end_channels=512,kernel_size=2,blocks=4,layers=2):
+        super(gwnet, self).__init__()
+
+        self.dropout = dropout
+        self.blocks = blocks
+        self.layers = layers
+        self.gcn_bool = gcn_bool
+        self.addaptadj = addaptadj
+
+        self.filter_convs = nn.ModuleList()
+        self.gate_convs = nn.ModuleList()
+        self.residual_convs = nn.ModuleList()
+        self.skip_convs = nn.ModuleList()
+        self.bn = nn.ModuleList()
+        self.gconv = nn.ModuleList()
+        self.device = device
+
+        self.start_conv = nn.Conv2d(in_channels=in_dim,
+                                    out_channels=residual_channels,
+                                    kernel_size=(1,1))
+        self.supports = supports
+
+        receptive_field = 1
+
+        self.supports_len = 0
+        if supports is not None:
+            self.supports_len += len(supports)
+
+        if gcn_bool and addaptadj:
+            if aptinit is None:
+                if supports is None:
+                    self.supports = []
+                self.nodevec1 = nn.Parameter(torch.randn(num_nodes, 10).to(device), requires_grad=True).to(device)
+                self.nodevec2 = nn.Parameter(torch.randn(10, num_nodes).to(device), requires_grad=True).to(device)
+                self.supports_len +=1
+            else:
+                if supports is None:
+                    self.supports = []
+                m, p, n = torch.svd(aptinit)
+                initemb1 = torch.mm(m[:, :10], torch.diag(p[:10] ** 0.5))
+                initemb2 = torch.mm(torch.diag(p[:10] ** 0.5), n[:, :10].t())
+                self.nodevec1 = nn.Parameter(initemb1, requires_grad=True).to(device)
+                self.nodevec2 = nn.Parameter(initemb2, requires_grad=True).to(device)
+                self.supports_len += 1
+
+        print("Kernel Size: {}".format(kernel_size))
+
+        for b in range(blocks):
+            additional_scope = kernel_size - 1
+            new_dilation = 1
+            for i in range(layers):
+                # dilated convolutions
+                self.filter_convs.append(nn.Conv2d(in_channels=residual_channels,
+                                                   out_channels=dilation_channels,
+                                                   kernel_size=(1,kernel_size), dilation=new_dilation))
+
+                self.gate_convs.append(nn.Conv1d(in_channels=residual_channels,
+                                                 out_channels=dilation_channels,
+                                                 kernel_size=(1, kernel_size), dilation=new_dilation))
+
+                # 1x1 convolution for residual connection
+                self.residual_convs.append(nn.Conv1d(in_channels=dilation_channels,
+                                                     out_channels=residual_channels,
+                                                     kernel_size=(1, 1)))
+
+                # 1x1 convolution for skip connection
+                self.skip_convs.append(nn.Conv1d(in_channels=dilation_channels,
+                                                 out_channels=skip_channels,
+                                                 kernel_size=(1, 1)))
+                self.bn.append(nn.BatchNorm2d(residual_channels))
+                new_dilation *=2
+                receptive_field += additional_scope
+                additional_scope *= 2
+                if self.gcn_bool:
+                    self.gconv.append(gcn(dilation_channels,residual_channels,dropout,support_len=self.supports_len))
+
+        self.end_conv_1 = nn.Conv2d(in_channels=skip_channels,
+                                  out_channels=end_channels,
+                                  kernel_size=(1,1),
+                                  bias=True)
+
+        self.end_conv_2 = nn.Conv2d(in_channels=end_channels,
+                                    out_channels=out_dim,
+                                    kernel_size=(1,1),
+                                    bias=True)
+
+        self.end_batch_norm = nn.BatchNorm2d(out_dim)
+
+        self.receptive_field = receptive_field
+
+        # self.threshold_alpha_prime = nn.Parameter(torch.zeros(1).to(device), requires_grad=True).to(device)
+
+    def forward(self, input):
+        # print("(0) Input: {}".format(input.shape))
+        in_len = input.size(3)
+        # print(in_len, input.size(3))
+        if in_len < self.receptive_field:
+            x = nn.functional.pad(input, (self.receptive_field-in_len,0,0,0))
+        else:
+            x = input
+        # print("(1) x, receptive field: {}\n{}".format(x.shape, self.receptive_field))
+        # print("1 - " + str(x.shape))
+        x = self.start_conv(x)
+        # print("2 - " + str(x.shape))
+        skip = 0
+        # print("234"+234)
+        # calculate the current adaptive adj matrix once per iteration
+        new_supports = None
+        if self.gcn_bool and self.addaptadj and self.supports is not None:
+            adp = F.softmax(torch.tanh(torch.mm(self.nodevec1, self.nodevec2)), dim=1)
+            new_supports = self.supports + [adp]
+
+        # WaveNet layers
+        # print(self.blocks, self.layers)
+        for i in range(self.blocks * self.layers):
+
+            #            |----------------------------------------|     *residual*
+            #            |                                        |
+            #            |    |-- conv -- tanh --|                |
+            # -> dilate -|----|                  * ----|-- 1x1 -- + -->	*input*
+            #                 |-- conv -- sigm --|     |
+            #                                         1x1
+            #                                          |
+            # ---------------------------------------> + ------------->	*skip*
+
+            #(dilation, init_dilation) = self.dilations[i]
+
+            #residual = dilation_func(x, dilation, init_dilation, i)
+            residual = x
+            # dilated convolution
+            filter = self.filter_convs[i](residual)
+            # print("  Filter: {}".format(filter.shape))
+            filter = torch.tanh(filter)
+            gate = self.gate_convs[i](residual)
+            # print("  Gate Shape: {}".format(gate.shape))
+            # print("    Gate: {}".format(gate[0, 0, :5, :5]))
+            gate = torch.sigmoid(gate)
+            x = filter * gate
+            # print("3." + str(i) + ".1 - " + str(x.shape))
+            # parametrized skip connection
+
+            s = x
+
+            # if x.size(2) != 1:
+            #     s = dilate(x, 1, init_dilation=dilation)
+
+            s = self.skip_convs[i](s)
+            try:
+                skip = skip[:, :, :,  -s.size(3):]
+            except:
+                skip = 0
+            skip = s + skip
+
+            if self.gcn_bool and self.supports is not None:
+                if self.addaptadj:
+                    x = self.gconv[i](x, new_supports)
+                else:
+                    x = self.gconv[i](x,self.supports)
+            else:
+                x = self.residual_convs[i](x)
+
+            # print("3." + str(i) + ".2 - " + str(x.shape))
+            x = x + residual[:, :, :, -x.size(3):]
+            # print("3." + str(i) + ".3 - " + str(x.shape))
+
+            x = self.bn[i](x)
+            # print("3." + str(i) + ".4 - " + str(x.shape))
+
+            # print("234" + 234)
+
+        # print("4 - " + str(x.shape))
+
+        x = F.tanh(skip)
+        # print("5 - " + str(x.shape))
+        x = F.tanh(self.end_conv_1(x))
+        # print("6 - " + str(x.shape))
+        x = self.end_conv_2(x)
+        # print("7 - " + str(x.shape))
+        # print(x[0, :, :, 0])
+        # x = self.end_batch_norm(x)
+        x = torch.sigmoid(x)
+        # dist = torch.distributions.bernoulli.Bernoulli(x)
+        # x = dist.sample()
+        # print(x[0, :, :, 0])
+        # x = x + threshold_alpha
+        # # x = torch.floor(x)
+        # # x = torch.where(x >= threshold_alpha, torch.ceil(x), torch.floor(x))
+        # print(x[0, :, :, 0])
+        # # x = x.round()
+        # print(self.threshold_alpha_prime)
+        # print(threshold_alpha)
+        # print()
+        # x = torch.sigmoid(x)
+        # x = torch.bernoulli(x)
+        # print("w2431"+1234)
+        return x
 
 
 class GraphConvNet(nn.Module):
