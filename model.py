@@ -371,11 +371,6 @@ class gcn(nn.Module):
 #         return x
 
 
-def nconv(x, A):
-    """Multiply x by adjacency matrix along source node axis"""
-    return torch.einsum('ncvl,vw->ncwl', (x, A)).contiguous()
-
-
 class GraphConvNet(nn.Module):
     def __init__(self, c_in, c_out, dropout, support_len=3, order=2):
         super().__init__()

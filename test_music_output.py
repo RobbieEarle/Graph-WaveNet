@@ -80,8 +80,7 @@ def main():
         supports = None
 
     print("Generating model... ")
-    model = gwnet(device, args.num_nodes, args.dropout, supports=supports, gcn_bool=args.gcn_bool,
-                  addaptadj=args.addaptadj,
+    model = GWNet2(device, args.num_nodes, args.dropout, supports=supports, addaptadj=args.addaptadj,
                   aptinit=adjinit, in_dim=args.in_dim, out_dim=args.seq_length, residual_channels=args.nhid,
                   dilation_channels=args.nhid, skip_channels=args.nhid * 8, end_channels=args.nhid * 16)
     print("  Done")
