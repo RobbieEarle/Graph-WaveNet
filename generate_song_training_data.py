@@ -124,6 +124,36 @@ def generate_train_val_test(args):
                 pr_data[i, 5] = 1
                 pr_data[i, 11] = 1
 
+    elif args.dataset == 'dual_bounce_diff_period':
+        print("Dual Bouncing with different periods")
+        pr_data = np.zeros((12, 101))
+        for i in range(5665):
+            m = i % 7
+            n = i % 11
+            if m == 0:
+                pr_data[i, 0] = 1
+            elif m == 1 or m == 6:
+                pr_data[i, 1] = 1
+            elif m == 2 or m == 5:
+                pr_data[i, 2] = 1
+            elif m == 3 or m == 4:
+                pr_data[i, 3] = 1
+
+            if n == 0:
+                pr_data[i, 4] = 1
+            elif n == 1 or n == 10:
+                pr_data[i, 5] = 1
+            elif n == 2 or n == 9:
+                pr_data[i, 6] = 1
+            elif n == 3 or n == 8:
+                pr_data[i, 7] = 1
+            elif n == 4 or n == 7:
+                pr_data[i, 8] = 1
+            elif n == 5 or n == 6:
+                pr_data[i, 9] = 1
+
+
+
     # choral_ids = bch_df.choral_ID.unique()
     # all_chorals = []
     # for curr_id in choral_ids:

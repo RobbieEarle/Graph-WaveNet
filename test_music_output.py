@@ -147,6 +147,34 @@ def main():
             elif m == 2:
                 pr_data[5, i] = 1
 
+    elif args.dataset == 'dual_bounce_diff_period':
+        print("Testing: Dual Bouncing with different periods")
+        pr_data = np.zeros((12, 101))
+        for i in range(101):
+            m = i % 7
+            n = i % 11
+            if m == 0:
+                pr_data[0,i] = 1
+            elif m == 1 or m == 6:
+                pr_data[1,i] = 1
+            elif m == 2 or m == 5:
+                pr_data[2,i] = 1
+            elif m == 3 or m == 4:
+                pr_data[3,i] = 1
+
+            if n == 0:
+                pr_data[4,i] = 1
+            elif n == 1 or n == 10:
+                pr_data[5,i] = 1
+            elif n == 2 or n == 9:
+                pr_data[6,i] = 1
+            elif n == 3 or n == 8:
+                pr_data[7,i] = 1
+            elif n == 4 or n == 7:
+                pr_data[8,i] = 1
+            elif n == 5 or n == 6:
+                pr_data[9,i] = 1
+
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
