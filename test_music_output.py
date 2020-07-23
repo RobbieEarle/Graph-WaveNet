@@ -175,6 +175,7 @@ def main():
             elif n == 5 or n == 6:
                 pr_data[9,i] = 1
 
+
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
