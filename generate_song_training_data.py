@@ -126,8 +126,8 @@ def generate_train_val_test(args):
 
     elif args.dataset == 'dual_bounce_diff_period':
         print("Dual Bouncing with different periods")
-        pr_data = np.zeros((5665, 12))
-        for i in range(5665):
+        pr_data = np.zeros((9000, 12))
+        for i in range(9000):
             m = i % 7
             n = i % 11
             if m == 0:
