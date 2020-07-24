@@ -259,8 +259,6 @@ class gwnet(nn.Module):
                                     kernel_size=(1,1),
                                     bias=True)
 
-        self.end_batch_norm = nn.BatchNorm2d(out_dim)
-
         self.receptive_field = receptive_field
 
         # self.threshold_alpha_prime = nn.Parameter(torch.zeros(1).to(device), requires_grad=True).to(device)
