@@ -148,7 +148,7 @@ def main():
                 pr_data[5, i] = 1
 
     elif args.dataset == 'dual_bouncing':
-        pr_data = np.zeros((101, 12))
+        pr_data = np.zeros((12, 101))
         for i in range(101):
             m = i % 4
             if m == 0:
