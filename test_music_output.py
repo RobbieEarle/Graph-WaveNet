@@ -126,8 +126,8 @@ def main():
         for i in range(101):
             if i %4 < 2:
                 pr_data[3, i] = 1
-            else:
-                pr_data[4, i] = 1
+            # else:
+            #     pr_data[4, i] = 1
 
     elif args.dataset == 'dual_press':
         print("Testing: Dual pressing")

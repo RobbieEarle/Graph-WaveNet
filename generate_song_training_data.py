@@ -88,8 +88,8 @@ def generate_train_val_test(args):
         for i in range(5665):
             if i %4 < 2:
                 pr_data[i, 3] = 1
-            else:
-                pr_data[i, 4] = 1
+            # else:
+            #     pr_data[i, 4] = 1
 
     elif args.dataset == 'dual_press':
         print("Dual pressing")
