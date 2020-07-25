@@ -147,6 +147,20 @@ def main():
             elif m == 2:
                 pr_data[5, i] = 1
 
+    elif args.dataset == 'dual_bouncing':
+        pr_data = np.zeros((101, 12))
+        for i in range(101):
+            m = i % 4
+            if m == 0:
+                pr_data[3, i] = 1
+                pr_data[9, i] = 1
+            elif m == 1 or m == 3:
+                pr_data[4, i] = 1
+                pr_data[10, i] = 1
+            elif m == 2:
+                pr_data[5, i] = 1
+                pr_data[11, i] = 1
+
     elif args.dataset == 'dual_bounce_diff_period':
         print("Testing: Dual Bouncing with different periods")
         pr_data = np.zeros((12, 101))
