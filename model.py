@@ -159,6 +159,7 @@ class gcn(nn.Module):
     def forward(self,x,support):
         out = [x]
         for a in support:
+            print(x.shape, a)
             x1 = self.nconv(x,a)
             out.append(x1)
             for k in range(2, self.order + 1):
