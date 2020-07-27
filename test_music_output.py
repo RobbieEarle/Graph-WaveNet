@@ -117,6 +117,7 @@ def main():
     model_in = np.reshape(model_in, (1, model_in.shape[0], model_in.shape[1], 1))
     model_in = torch.Tensor(model_in).to(device)
     model_in = model_in.transpose(1, 3)
+    print(model_in.shape)
     with torch.no_grad():
         preds = model(model_in).transpose(1, 3)
     print("  Done")
