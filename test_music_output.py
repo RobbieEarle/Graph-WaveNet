@@ -106,6 +106,7 @@ def main():
         velocities = np.expand_dims(velocities, axis=1)
         pr_data = np.transpose(velocities * pitches)
 
+    print(pr_data.shape)
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
