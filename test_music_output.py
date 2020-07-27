@@ -106,7 +106,6 @@ def main():
         velocities = np.expand_dims(velocities, axis=1)
         pr_data = np.transpose(velocities * pitches)
 
-    print(pr_data.shape)
     pr_sample = pr_data[:, args.sample_time:args.sample_time + args.seq_length]
     pr_sample_label = pr_data[:, args.sample_time + args.seq_length:args.sample_time + (2 * args.seq_length)]
 
@@ -117,30 +116,31 @@ def main():
     model_in = np.reshape(model_in, (1, model_in.shape[0], model_in.shape[1], 1))
     model_in = torch.Tensor(model_in).to(device)
     model_in = model_in.transpose(1, 3)
-    print(model_in.shape)
     with torch.no_grad():
         preds = model(model_in).transpose(1, 3)
     print("  Done")
 
-    print("Synthesizing audio...")
+    # print("Synthesizing audio...")
     prediction = preds.squeeze().cpu().numpy()
-    padded_prediction = pad_choral(prediction)
-    pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
-    generated_audio = pred_midi_sample.synthesize(fs=16000)
+    # padded_prediction = pad_choral(prediction)
+    # pred_midi_sample = util.piano_roll_to_pretty_midi(padded_prediction, 1)
+    # generated_audio = pred_midi_sample.synthesize(fs=16000)
+    #
+    # padded_sample = pad_choral(pr_sample)
+    # midi_sample = util.piano_roll_to_pretty_midi(padded_sample, 1)
+    # sample_audio = midi_sample.synthesize(fs=16000)
+    #
+    # padded_sample_label = pad_choral(pr_sample_label)
+    # midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
+    # sample_label_audio = midi_sample_label.synthesize(fs=16000)
+    # print("  Done")
 
-    padded_sample = pad_choral(pr_sample)
-    midi_sample = util.piano_roll_to_pretty_midi(padded_sample, 1)
-    sample_audio = midi_sample.synthesize(fs=16000)
-
-    padded_sample_label = pad_choral(pr_sample_label)
-    midi_sample_label = util.piano_roll_to_pretty_midi(padded_sample_label, 1)
-    sample_label_audio = midi_sample_label.synthesize(fs=16000)
-    print("  Done")
+    print(pr_sample.shape, pr_sample_label.shape, prediction.shape)
 
     print("Saving data...")
-    np.save('MODEL_audio_sample', sample_audio)
-    np.save('MODEL_audio_sample_label', sample_label_audio)
-    np.save('MODEL_audio_generated', generated_audio)
+    # np.save('MODEL_audio_sample', sample_audio)
+    # np.save('MODEL_audio_sample_label', sample_label_audio)
+    # np.save('MODEL_audio_generated', generated_audio)
     np.save('MODEL_pr_sample', pr_sample)
     np.save('MODEL_pr_sample_label', pr_sample_label)
     np.save('MODEL_pr_generated', prediction)
