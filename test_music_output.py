@@ -39,6 +39,7 @@ args = parser.parse_args()
 def pad_choral(choral):
     left_padding = np.zeros((59, choral.shape[1]))
     right_padding = np.zeros((57, choral.shape[1]))
+    print(left_padding, choral, right_padding)
     return np.concatenate((left_padding, choral, right_padding), axis=0)
 
 
